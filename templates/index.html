@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}HOME{% endblock %}
+{% block left %}
+    <h2 class="sub-title">Communities</h2>
+    <ul class="sub-list">
+        {% for sub in subs %}
+            <li style="background-image: url('{{ sub.get_icon_link() }}');"><a href="#">{{ sub.get_name() }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}

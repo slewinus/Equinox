@@ -1,0 +1,70 @@
+body, html{
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    background-color: #2c2f33;
+}
+
+p, h1, h2, h3, h4, h5, h6, a, li{
+    color: #82828a;
+}
+
+.main-container{
+    display: flex;
+    justify-content: normal;
+    flex-direction: row;
+    height: 100%;
+}
+
+.main-container > section{
+    height: 100%;
+    padding: 10px 5px 0 5px;
+    margin: 0;
+}
+
+.left-menu{
+    width: 25%;
+}
+
+.content{
+    width: 50%;
+    background-color: #383d41;
+}
+
+.right-menu{
+    width: 25%;
+}
+
+.sub-title{
+    font-size: 25px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.sub-list{
+    padding: 0 0 0 20px;
+    margin: 0;
+    width: 90%;
+}
+
+.sub-list > li{
+    list-style: none;
+    height: 40px;
+    background-color: #25282b;
+    margin-bottom: 20px;
+	padding: 10px 0 10px 50px;
+	background-repeat: no-repeat;
+	background-position: left center;
+	background-size: 40px;
+    border-radius: 5px;
+}
+
+.sub-list > li > a{
+    text-decoration: none;
+    line-height: 35px;
+    font-size: 20px;
+}
+
+.sub-list > li > a:hover{
+    color: #9e9ea2;
+}
