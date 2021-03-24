@@ -1,8 +1,10 @@
+
 body, html{
     height: 100%;
     padding: 0;
     margin: 0;
     background-color: #2c2f33;
+    font-family: Calibri, arial, serif;
 }
 
 p, h1, h2, h3, h4, h5, h6, a, li{
@@ -32,6 +34,7 @@ p, h1, h2, h3, h4, h5, h6, a, li{
 }
 
 .right-menu{
+    padding: 10px;
     width: 25%;
 }
 
@@ -67,4 +70,61 @@ p, h1, h2, h3, h4, h5, h6, a, li{
 
 .sub-list > li > a:hover{
     color: #9e9ea2;
+}
+
+.right_top_menu{
+    margin: 0;
+    padding: 0 30px 0 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 150px;
+}
+.user_profile_pic{
+    max-width: 200px;
+}
+
+.settings_icon{
+    width: 50px;
+}
+
+.right_side_menu{
+    width: 75%;
+}
+
+.right_side_menu > li{
+    list-style: none;
+    height: 40px;
+    background-color: #292c30;
+    margin-bottom: 20px;
+	padding: 10px 0 10px 80px;
+	background-repeat: no-repeat;
+	background-position: left center;
+	background-size: 40px;
+    border-radius: 20px;
+}
+
+.right_side_menu .current_page{
+    background-color: #9e9ea2;
+}
+
+.right_side_menu > li > a{
+    line-height: 45px;
+    font-size: 22px;
+    width: 80%;
+    text-decoration: none;
+    font-weight: bold;
+    color: #82828a;
+}
+
+.right_side_menu > li > a:hover{
+    color: #9e9ea2;
+}
+
+.right_side_menu > .current_page > a{
+    color: #2c2f33;
+}
+
+.right_side_menu > .current_page > a:hover{
+    color: #353535;
 }

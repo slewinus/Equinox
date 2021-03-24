@@ -1,8 +1,9 @@
 class User:
-    def __init__(self, n, p):
+    def __init__(self, n, p, pp):
         self.username = n
         self.password = p
         self.bio = str()
+        self.pic_link = pp
         self.age = None
 
     def get_password(self):
@@ -13,6 +14,9 @@ class User:
 
     def get_bio(self):
         return self.bio
+
+    def get_picture_link(self):
+        return self.pic_link
 
 
 class Community:

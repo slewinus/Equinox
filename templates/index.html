@@ -1,10 +1,30 @@
 {% extends 'base.html' %}
 {% block title %}HOME{% endblock %}
+
 {% block left %}
     <h2 class="sub-title">Communities</h2>
     <ul class="sub-list">
         {% for sub in subs %}
             <li style="background-image: url('{{ sub.get_icon_link() }}');"><a href="#">{{ sub.get_name() }}</a></li>
         {% endfor %}
+    </ul>
+{% endblock %}
+
+{% block content %}
+
+
+{% endblock %}
+
+
+{% block right %}
+    <figure class="right_top_menu">
+        <a href="#"><img class="settings_icon" src="https://www.iconpacks.net/icons/2/free-settings-icon-3110-thumb.png"  alt="settings"/></a>
+        <a href="#"><img class="user_profile_pic" src="{{ user.get_picture_link() }}"  alt="profile"/></a>
+    </figure>
+    <ul class="right_side_menu">
+        <li class="current_page"><a href="#">Accueil</a></li>
+        <li><a href="#">Suggestions</a></li>
+        <li><a href="#">Subquinox</a></li>
+        <li><a href="#">Notifications</a></li>
     </ul>
 {% endblock %}
