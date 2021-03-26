@@ -37,7 +37,7 @@ def index():
 
 
 @app.route('/suggestions/')
-def suggestions():
+def suggest():
     return render_template('suggestions.html', user=elliott, subs=comm, sugg=suggestions)
 
 

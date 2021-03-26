@@ -12,8 +12,15 @@
 
 {% block content %}
     <h2 class="content_title">Suggestions :</h2>
-    {% for.. in zefzef %}
-        {{ ezfgefezf.fonction() }}
+    {% for sug in sugg %}
+        <ul class="sug_list">
+            <li class="suggestion">
+                <img src="{{ sug.get_picture_link() }}" alt="profile picture" class="sug_profile_picture">
+                <h4 class="sug_username">{{ sug.get_username() }}</h4>
+                <form><button class="sug_abo">ajouter en ami +</button></form>
+            </li>
+        </ul>
+
     {% endfor %}
 
 {% endblock %}
