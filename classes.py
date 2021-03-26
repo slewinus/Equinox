@@ -32,10 +32,12 @@ class Community:
 
 
 class Submission:
-    def __init__(self, u, t, txt, c=None, im=None):
+    def __init__(self, u, t, txt, up, down, c=None, im=None):
         self.user = u
         self.title = t
         self.text = txt
+        self.likes = up
+        self.dislikes = down
         self.community = c
         self.image_link = im
 
@@ -59,6 +61,12 @@ class Submission:
 
     def get_author(self):
         return self.user.get_username()
+
+    def get_likes(self):
+        return self.likes
+
+    def get_dislikes(self):
+        return self.dislikes
 
 
 class GraphDic:
