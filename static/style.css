@@ -119,11 +119,16 @@ p, h1, h2, h3, h4, h5, h6, a, li{
     height: 40px;
     background-color: #292c30;
     margin-bottom: 20px;
-	padding: 10px 0 10px 80px;
+	padding: 10px 0 10px 15px;
 	background-repeat: no-repeat;
 	background-position: left center;
 	background-size: 40px;
     border-radius: 9px;
+}
+
+.right_side_menu >li > a > .icon{
+    height: 35px;
+    margin-right: 20px;
 }
 
 .right_side_menu .current_page{
@@ -131,6 +136,7 @@ p, h1, h2, h3, h4, h5, h6, a, li{
 }
 
 .right_side_menu > li > a{
+    display: flex;
     line-height: 45px;
     font-size: 22px;
     width: 80%;
