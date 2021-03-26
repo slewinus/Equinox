@@ -214,6 +214,25 @@ p, h1, h2, h3, h4, h5, h6, a, li{
     border-top: #383d41 solid 1px;
 }
 
+.post_likes, .post_dislikes{
+    margin: 5px 0 5px 0;
+    min-width: 85px;
+    height: 35px;
+    background-color: #383d41;
+    border: 0;
+    border-radius: 2px;
+    box-shadow: 0 3px #2d2d2d;
+}
+
+.post_likes:hover, .post_dislikes:hover{
+    background-color: #35383b
+}
+
+.post_dislikes:active, .post_likes:active{
+    box-shadow: 0 1px #000000;
+    transform: translateY(2px);
+}
+
 .post_likes{
     color: #3455ac;
     margin-right: 50px;
@@ -222,3 +241,4 @@ p, h1, h2, h3, h4, h5, h6, a, li{
 .post_dislikes{
     color: #993b3b;
 }
+

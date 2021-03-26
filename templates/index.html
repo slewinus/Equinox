@@ -25,8 +25,8 @@
             {% endif %}
             <p class="post_content">{{ post.get_text() }}</p>
             <div class="post_feedback">
-                <p class="post_likes">Likes : {{ post.get_likes() }}</p>
-                <p class="post_dislikes"> Dislikes : {{ post.get_dislikes() }}</p>
+                <button class="post_likes">Like | {{ post.get_likes() }}</button>
+                <button class="post_dislikes"> Dislike | {{ post.get_dislikes() }}</button>
             </div>
         </div>
     {% endfor %}
