@@ -24,14 +24,21 @@ Phasellus finibus rutrum lectus quis commodo. Ut vel dignissim nisi. Proin eleif
 
 Fusce euismod orci nec lobortis pellentesque. Mauris nec velit urna. Suspendisse potenti. Aenean euismod vulputate dignissim. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. In lorem magna, maximus eu lobortis vel, laoreet at mi. Nam et ligula imperdiet, interdum elit ut, varius odio. Nunc accumsan, felis vel consectetur fringilla, dolor libero suscipit nunc, vitae interdum mi massa id nunc.""",
                    150, 12, 1, games)
-suggestions = []
+oscar = User("Oscar", "efzefezrf", "https://www.pngkey.com/png/full/204-2049354_ic-account-box-48px-profile-picture-icon-square.png")
+frederic = User("Frederic", "zegzegze", "https://www.pngkey.com/png/full/204-2049354_ic-account-box-48px-profile-picture-icon-square.png")
+suggestions = [oscar, frederic]
 posts.append(post1)
 posts.append(post2)
 
 
 @app.route('/')
 def index():
-    return render_template('index.html', subs=comm, user=elliott, posts=posts, sugg=suggestions)
+    return render_template('index.html', subs=comm, user=elliott, posts=posts)
+
+
+@app.route('/suggestions/')
+def suggestions():
+    return render_template('suggestions.html', user=elliott, subs=comm, sugg=suggestions)
 
 
 @app.route('/like_post/', methods=['POST'])
