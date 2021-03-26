@@ -2,8 +2,8 @@
 {% block title %}HOME{% endblock %}
 
 {% block left %}
-    <h2 class="sub-title">Communities</h2>
-    <ul class="sub-list">
+    <h2 class="sub_title">Communities:</h2>
+    <ul class="sub_list">
         {% for sub in subs %}
             <li style="background-image: url('{{ sub.get_icon_link() }}');"><a href="#">{{ sub.get_name() }}</a></li>
         {% endfor %}
@@ -11,7 +11,22 @@
 {% endblock %}
 
 {% block content %}
-
+    <h2 class="content_title">Your Feed:</h2>
+    <div class="the_posts">
+    {% for post in posts %}
+        <div class="single_post">
+            <div class="post_identity">
+                <p class="post_author">{{ post.get_author() }}</p>
+                <p class="post_community">Subquinox : {{ post.get_community().get_name() }}</p>
+            </div>
+            <h4 class="post_title">{{ post.get_title() }}</h4>
+            {% if post.has_image() %}
+            <img class="post_image" src='{{ post.get_image() }}' alt="post" />
+            {% endif %}
+            <p class="post_content">{{ post.get_text() }}</p>
+        </div>
+    {% endfor %}
+    </div>
 
 {% endblock %}
 

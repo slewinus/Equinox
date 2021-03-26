@@ -31,6 +31,36 @@ class Community:
         return self.icon_link
 
 
+class Submission:
+    def __init__(self, u, t, txt, c=None, im=None):
+        self.user = u
+        self.title = t
+        self.text = txt
+        self.community = c
+        self.image_link = im
+
+    def get_user(self):
+        return self.user
+
+    def get_title(self):
+        return self.title
+
+    def get_text(self):
+        return self.text
+
+    def get_community(self):
+        return self.community
+
+    def has_image(self):
+        return self.image_link is not None
+
+    def get_image(self):
+        return self.image_link
+
+    def get_author(self):
+        return self.user.get_username()
+
+
 class GraphDic:
     """ Un graphe comme dictionnaire d'adjacence"""
 
