@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+    <head>
+        <title>{% block title %}{% endblock %} - Equinox</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+<body>
+    <div class="main-container">
+        <section class="left-menu">
+            {% block left %}{% endblock %}
+        </section>
+        <section class="content">
+            {% block content %}{% endblock %}
+        </section>
+        <section class="right-menu">
+            {% block right %}{% endblock %}
+        </section>
+    </div>
+</body>
+</html>

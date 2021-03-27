@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}HOME{% endblock %}
+
+{% block left %}
+    <h2 class="sub_title">Communities:</h2>
+    <ul class="sub_list">
+        {% for sub in subs %}
+            <li><a href="#"><img class="sub_img" src="{{ sub.get_icon_link() }}"><h4>{{ sub.get_name() }}</h4></a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+
+{% block content %}
+    <h2 class="content_title">Your Feed:</h2>
+    <div class="the_posts">
+    {% for post in posts %}
+        <div class="single_post">
+            <div class="post_identity">
+                <p class="post_author">{{ post.get_author() }}</p>
+                <p class="post_community">Subquinox : {{ post.get_community().get_name() }}</p>
+            </div>
+            <h4 class="post_title">{{ post.get_title() }}</h4>
+            {% if post.has_image() %}
+            <img class="post_image" src='{{ post.get_image() }}' alt="post" />
+            {% endif %}
+            <p class="post_content">{{ post.get_text() }}</p>
+            <div class="post_feedback">
+                <form action="/like_post/" method="post">
+                    <input type="hidden" name="post_id" value="post.get_id()">
+                    <button class="post_likes" id="like_{{ post.get_id() }}">Like | {{ post.get_likes() }}</button>
+                </form>
+                <button class="post_dislikes" id="dislike_{{ post.get_id() }}"> Dislike | {{ post.get_dislikes() }}</button>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+
+{% endblock %}
+
+
+{% block right %}
+    <figure class="right_top_menu">
+        <a href="#"><img class="settings_icon" src="https://www.iconpacks.net/icons/2/free-settings-icon-3110-thumb.png"  alt="settings"/></a>
+        <a href="#"><img class="user_profile_pic" src="{{ user.get_picture_link() }}"  alt="profile"/></a>
+    </figure>
+    <ul class="right_side_menu">
+        <li class="current_page"><a href="/"><img class="icon" src="{{ url_for('static', filename='home.png') }}" alt="feed"><span class="link_text">Feed</span></a></li>
+        <li><a href="/suggestions/"><img class="icon" src="{{ url_for('static', filename='sugg.png') }}" alt="suggestions"><span class="link_text">Suggestions</span></a></li>
+        <li><a href="#"><img class="icon" src="{{ url_for('static', filename='sub.png') }}" alt="subquinox"><span class="link_text">Subquinox</span></a></li>
+        <li><a href="#"><img class="icon" src="{{ url_for('static', filename='notification.png') }}" alt="bell"><span class="link_text">Notifications</span></a></li>
+    </ul>
+{% endblock %}

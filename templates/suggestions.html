@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}HOME{% endblock %}
+
+{% block left %}
+    <h2 class="sub_title">Communities:</h2>
+    <ul class="sub_list">
+        {% for sub in subs %}
+            <li><a href="#"><img class="sub_img" src="{{ sub.get_icon_link() }}"><h4>{{ sub.get_name() }}</h4></a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+
+{% block content %}
+    <h2 class="content_title">Suggestions :</h2>
+    {% for sug in sugg %}
+        <ul class="sug_list">
+            <li class="single_sug">
+                <div class="sug_identity">
+                    <img src="{{ sug.get_picture_link() }}" alt="profile picture" class="sug_profile_picture">
+                    <h4 class="sug_username">{{ sug.get_username() }}</h4>
+                </div>
+                <form><button class="sug_abo">ajouter en ami +</button></form>
+            </li>
+        </ul>
+    {% endfor %}
+
+{% endblock %}
+
+
+{% block right %}
+    <figure class="right_top_menu">
+        <a href="#"><img class="settings_icon" src="https://www.iconpacks.net/icons/2/free-settings-icon-3110-thumb.png"  alt="settings"/></a>
+        <a href="#"><img class="user_profile_pic" src="{{ user.get_picture_link() }}"  alt="profile"/></a>
+    </figure>
+    <ul class="right_side_menu">
+        <li><a href="/"><img class="icon" src="{{ url_for('static', filename='home.png') }}" alt="feed"><span class="link_text">Feed</span></a></li>
+        <li class="current_page"><a href="/suggestions/"><img class="icon" src="{{ url_for('static', filename='sugg.png') }}" alt="suggestions"><span class="link_text">Suggestions</span></a></li>
+        <li><a href="#"><img class="icon" src="{{ url_for('static', filename='sub.png') }}" alt="subquinox"><span class="link_text">Subquinox</span></a></li>
+        <li><a href="#"><img class="icon" src="{{ url_for('static', filename='notification.png') }}" alt="bell"><span class="link_text">Notifications</span></a></li>
+    </ul>
+{% endblock %}
