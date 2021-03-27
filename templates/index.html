@@ -44,8 +44,8 @@
         <a href="#"><img class="user_profile_pic" src="{{ user.get_picture_link() }}"  alt="profile"/></a>
     </figure>
     <ul class="right_side_menu">
-        <li class="current_page"><a href="#"><img class="icon" src="{{ url_for('static', filename='home.png') }}" alt="feed"><span class="link_text">Feed</span></a></li>
-        <li><a href="#"><img class="icon" src="{{ url_for('static', filename='sugg.png') }}" alt="suggestions"><span class="link_text">Suggestions</span></a></li>
+        <li class="current_page"><a href="/"><img class="icon" src="{{ url_for('static', filename='home.png') }}" alt="feed"><span class="link_text">Feed</span></a></li>
+        <li><a href="/suggestions/"><img class="icon" src="{{ url_for('static', filename='sugg.png') }}" alt="suggestions"><span class="link_text">Suggestions</span></a></li>
         <li><a href="#"><img class="icon" src="{{ url_for('static', filename='sub.png') }}" alt="subquinox"><span class="link_text">Subquinox</span></a></li>
         <li><a href="#"><img class="icon" src="{{ url_for('static', filename='notification.png') }}" alt="bell"><span class="link_text">Notifications</span></a></li>
     </ul>
