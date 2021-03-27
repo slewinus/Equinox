@@ -26,7 +26,8 @@ Fusce euismod orci nec lobortis pellentesque. Mauris nec velit urna. Suspendisse
                    150, 12, 1, games)
 oscar = User("Oscar", "efzefezrf", "https://www.pngkey.com/png/full/204-2049354_ic-account-box-48px-profile-picture-icon-square.png")
 frederic = User("Frederic", "zegzegze", "https://www.pngkey.com/png/full/204-2049354_ic-account-box-48px-profile-picture-icon-square.png")
-suggestions = [oscar, frederic]
+zoe = User("Zoe", "zoelpb", "https://www.pngkey.com/png/full/204-2049354_ic-account-box-48px-profile-picture-icon-square.png")
+suggestions = [oscar, frederic, zoe]
 posts.append(post1)
 posts.append(post2)
 

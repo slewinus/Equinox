@@ -64,17 +64,24 @@ p, h1, h2, h3, h4, h5, h6, a, li{
     min-height: 40px;
     background-color: #25282b;
     margin-bottom: 20px;
-	padding: 10px 0 10px 50px;
-	background-repeat: no-repeat;
-	background-position: left center;
-	background-size: 40px;
+	padding: 10px 0 10px 10px;
     border-radius: 5px;
 }
 
+.sub_img{
+    height: 40px;
+    width: 40px;
+    margin-right: 10px;
+}
+
 .sub_list > li > a{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
     text-decoration: none;
-    line-height: 35px;
     font-size: 20px;
+    height: 40px;
+    word-break: break-all;
 }
 
 .sub_list > li > a:hover{
@@ -225,7 +232,7 @@ p, h1, h2, h3, h4, h5, h6, a, li{
 }
 
 .post_likes:hover, .post_dislikes:hover{
-    background-color: #35383b
+    background-color: #35383b;
 }
 
 .post_dislikes:active, .post_likes:active{
@@ -242,3 +249,59 @@ p, h1, h2, h3, h4, h5, h6, a, li{
     color: #993b3b;
 }
 
+/**********************/
+/* Suggestions d'amis */
+/**********************/
+
+.sug_list{
+    padding: 0 0 0 20px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 90%;
+}
+
+.single_sug{
+    list-style: none;
+    min-height: 40px;
+    background-color: #2c2f33;
+    margin-bottom: 20px;
+	padding: 10px 30px 10px 50px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sug_profile_picture{
+    height: 40px;
+    width: 40px;
+}
+
+.sug_identity{
+    display:flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.sug_username{
+    margin-left: 20px;
+}
+
+.sug_abo{
+    min-width: 85px;
+    height: 35px;
+    background-color: #383d41;
+    border: 0;
+    border-radius: 2px;
+    box-shadow: 0 3px #2d2d2d;
+    color: #82828a;
+}
+
+.sug_abo:active{
+    box-shadow: 0 1px #000000;
+    transform: translateY(2px);
+}
+
+.sub_abo:hover{
+    background-color: #35383b;
+}

@@ -5,7 +5,7 @@
     <h2 class="sub_title">Communities:</h2>
     <ul class="sub_list">
         {% for sub in subs %}
-            <li style="background-image: url('{{ sub.get_icon_link() }}');"><a href="#">{{ sub.get_name() }}</a></li>
+            <li><a href="#"><img class="sub_img" src="{{ sub.get_icon_link() }}"><h4>{{ sub.get_name() }}</h4></a></li>
         {% endfor %}
     </ul>
 {% endblock %}
@@ -14,9 +14,11 @@
     <h2 class="content_title">Suggestions :</h2>
     {% for sug in sugg %}
         <ul class="sug_list">
-            <li class="suggestion">
-                <img src="{{ sug.get_picture_link() }}" alt="profile picture" class="sug_profile_picture">
-                <h4 class="sug_username">{{ sug.get_username() }}</h4>
+            <li class="single_sug">
+                <div class="sug_identity">
+                    <img src="{{ sug.get_picture_link() }}" alt="profile picture" class="sug_profile_picture">
+                    <h4 class="sug_username">{{ sug.get_username() }}</h4>
+                </div>
                 <form><button class="sug_abo">ajouter en ami +</button></form>
             </li>
         </ul>
