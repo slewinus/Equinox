@@ -1,5 +1,21 @@
 from flask import Flask, render_template
 from classes import User, GraphDic, Community, Submission
+import mysql.connector
+
+mydb = mysql.connector.connect(
+    host="sql280.main-hosting.eu",
+    user="u938835060_test",
+    password="AGIEXx6hB]",
+    database="u938835060_elliott"
+)
+
+cursor = mydb.cursor()
+query = "SELECT * FROM user WHERE username=%s AND password=%s"
+values = ("elliott_lvnb", "lemotdepasse")
+cursor.execute(query, values)
+result = cursor.fetchall()[0]
+
+user = User(result[1], result[4], result[5])
 
 app = Flask(__name__)
 
@@ -12,11 +28,10 @@ games = Community("Jeux vidéos", "https://www.iconninja.com/files/574/642/378/b
 comm.append(dev)
 comm.append(games)
 
-elliott = User("Elliott", "purple2003", "https://www.pngkey.com/png/full/204-2049354_ic-account-box-48px-profile-picture-icon-square.png")
 
-post1 = Submission(elliott, "Hello World!", "What am I to become?", 2021, 19, 0, dev,
+post1 = Submission(user, "Hello World!", "What am I to become?", 2021, 19, 0, dev,
                    "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Robot-icon.svg/1200px-Robot-icon.svg.png")
-post2 = Submission(elliott, "Second post!", """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam tristique mauris lacus, nec pulvinar diam mollis quis. In aliquam tellus et nibh mattis, vitae imperdiet sem maximus. Donec tempor tellus tellus, in volutpat libero commodo non. Sed molestie felis eget enim vestibulum, quis pretium mi egestas. Pellentesque ut tempor justo. Nulla dictum arcu vel diam finibus tristique. Nullam tortor nulla, elementum eget consequat vitae, faucibus in nulla. Fusce mattis id dolor vel luctus. Cras et turpis at ex porttitor tincidunt. Mauris ante mi, eleifend mollis diam laoreet, faucibus accumsan dui.
+post2 = Submission(user, "Second post!", """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam tristique mauris lacus, nec pulvinar diam mollis quis. In aliquam tellus et nibh mattis, vitae imperdiet sem maximus. Donec tempor tellus tellus, in volutpat libero commodo non. Sed molestie felis eget enim vestibulum, quis pretium mi egestas. Pellentesque ut tempor justo. Nulla dictum arcu vel diam finibus tristique. Nullam tortor nulla, elementum eget consequat vitae, faucibus in nulla. Fusce mattis id dolor vel luctus. Cras et turpis at ex porttitor tincidunt. Mauris ante mi, eleifend mollis diam laoreet, faucibus accumsan dui.
 
 Curabitur sit amet elit consectetur, ultricies eros viverra, tempus eros. Sed efficitur, purus ut porttitor hendrerit, velit ex laoreet lorem, eget posuere purus arcu eu libero. Suspendisse fermentum posuere bibendum. Aliquam porttitor augue dolor, vel finibus neque posuere nec. Etiam egestas enim ligula, in euismod est fermentum ut. Nullam quis nulla risus. In elementum porttitor nunc, vel efficitur nisi. Ut et ante ac lectus fermentum pellentesque in ut turpis. Mauris faucibus dui lectus, nec posuere arcu fringilla nec. Etiam pretium, justo nec molestie ornare, nunc dui finibus urna, eu hendrerit velit nulla at erat. Integer ac nulla mollis, convallis turpis at, porta nibh. Proin mattis arcu non nibh scelerisque eleifend a in eros. Nam in posuere arcu.
 
@@ -34,17 +49,17 @@ posts.append(post2)
 
 @app.route('/')
 def index():
-    return render_template('index.html', subs=comm, user=elliott, posts=posts)
+    return render_template('index.html', subs=comm, user=user, posts=posts)
 
 
 @app.route('/suggestions/')
 def suggest():
-    return render_template('suggestions.html', user=elliott, subs=comm, sugg=suggestions)
+    return render_template('suggestions.html', user=user, subs=comm, sugg=suggestions)
 
 
 @app.route('/like_post/', methods=['POST'])
 def like_post():
-    return render_template('index.html', subs=comm, user=elliott, posts=posts)
+    return render_template('index.html', subs=comm, user=user, posts=posts)
 
 
 if __name__ == '__main__':
