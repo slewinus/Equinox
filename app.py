@@ -5,15 +5,17 @@ import mysql.connector, os, re
 app = Flask(__name__)
 
 app.secret_key = os.urandom(12).hex()
-mydb = mysql.connector.connect(
-    host="sql280.main-hosting.eu",
-    user="u938835060_test",
-    password="AGIEXx6hB]",
-    database="u938835060_elliott"
-)
 
 
-@app.route('/home')
+def connect():
+    return mysql.connector.connect(
+        host="sql280.main-hosting.eu",
+        user="u938835060_test",
+        password="AGIEXx6hB]",
+        database="u938835060_elliott")
+
+
+@app.route('/')
 def home():
     if 'loggedin' in session:
         user_id = session['id']
@@ -24,6 +26,7 @@ def home():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    mydb = connect()
     # Output message if something goes wrong...
     msg = ''
     # Check if "username" and "password" POST requests exist (user submitted form)
@@ -66,6 +69,7 @@ def logout():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    mydb = connect()
     # Output message if something goes wrong...
     msg = ''
     # Check if "username", "password" and "email" POST requests exist (user submitted form)
@@ -110,6 +114,7 @@ def like_post():
 
 
 def get_content(user_id):
+    mydb = connect()
     cursor = mydb.cursor()
     user_id = session['id']
     cursor.execute(
@@ -133,9 +138,11 @@ def get_content(user_id):
         c = cursor.fetchone()
         if c is not None:
             c = Community(c[1], c[2])
+        if p[6] == '':
+            img = None
         else:
-            c = Community('General', '')
-        posts.append(Submission(u, p[1], p[2], p[3], p[4], p[5], c, p[6]))
+            img = p[6]
+        posts.append(Submission(u, p[1], p[2], p[3], p[4], p[5], c, img))
     cursor.close()
     return subs, posts
 
