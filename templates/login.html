@@ -1,28 +1,17 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<title>Login</title>
-	</head>
-	<body>
-		<div class="login">
-			<h1>Login</h1>
-			<div class="links">
-				<a href="{{ url_for('login') }}" class="active">Login</a>
-				<a href="#">Register</a>
-			</div>
-			<form action="{{ url_for('login') }}" method="post">
-				<label for="username">
-					<i class="fas fa-user"></i>
-				</label>
-				<input type="text" name="username" placeholder="Username" id="username" required>
-				<label for="password">
-					<i class="fas fa-lock"></i>
-				</label>
-				<input type="password" name="password" placeholder="Password" id="password" required>
-				<div class="msg">{{ msg }}</div>
-				<input type="submit" value="Login">
-			</form>
-		</div>
-	</body>
-</html>
+{% extends 'base.html' %}
+{% block title %}HOME{% endblock %}
+
+{% block content %}
+    <h2 class="content_title">Connexion</h2>
+    <div class="container">
+        <form action="{{ url_for('login') }}" method="post">
+            <label for="username"><b>Pseudo</b></label>
+            <input type="text" placeholder="Entrez votre pseudo" name="username" id="username" required>
+            <label for="password"><b>Mot de passe</b></label>
+            <input type="password" placeholder="Entrez votre mot de passe" name="password" id="password" required>
+            <div class="msg">{{ msg }}</div>
+            <input type="submit" value="Login">
+        </form>
+    </div>
+
+{% endblock %}

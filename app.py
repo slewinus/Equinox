@@ -1,6 +1,9 @@
+import mysql.connector
+import os
+import re
 from flask import Flask, render_template, redirect, url_for, session, request
-from classes import User, GraphDic, Community, Submission
-import mysql.connector, os, re
+
+from classes import User, Community, Submission
 
 app = Flask(__name__)
 
@@ -17,7 +20,7 @@ def connect():
 
 @app.route('/')
 def home():
-    if 'loggedin' in session:
+    if 'loggedin' in session and 'username' in session:
         user_id = session['id']
         subs, posts = get_content(user_id)
         return render_template('index.html', subs=subs, posts=posts, user=User(session['username'], session['password'], session['img_link']))
