@@ -54,6 +54,9 @@ class Submission:
     def get_community(self):
         return self.community
 
+    def has_community(self):
+        return self.community is not None
+
     def has_image(self):
         return self.image_link is not None
 

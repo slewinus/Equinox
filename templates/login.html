@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}HOME{% endblock %}
+
+{% block content %}
+    <h2 class="content_title">Connexion</h2>
+    <div class="registercontainer">
+        <form action="{{ url_for('login') }}" method="post">
+            <label for="username"><b>Pseudo</b></label><br />
+            <input type="text" placeholder="Entrez votre pseudo" name="username" id="username" required><br />
+            <label for="password"><b>Mot de passe</b></label><br />
+            <input type="password" placeholder="Entrez votre mot de passe" name="password" id="password" required><br />
+            <div class="msg">{{ msg }}</div>
+            <input type="submit" value="Login">
+        </form>
+    </div>
+
+{% endblock %}

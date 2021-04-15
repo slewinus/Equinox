@@ -17,7 +17,9 @@
         <div class="single_post">
             <div class="post_identity">
                 <p class="post_author">{{ post.get_author() }}</p>
+                {% if post.has_community() %}
                 <p class="post_community">Subquinox : {{ post.get_community().get_name() }}</p>
+                {% endif %}
             </div>
             <h4 class="post_title">{{ post.get_title() }}</h4>
             {% if post.has_image() %}
