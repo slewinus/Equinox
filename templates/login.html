@@ -1,17 +1,23 @@
-{% extends 'base.html' %}
-{% block title %}HOME{% endblock %}
-
-{% block content %}
-    <h2 class="content_title">Connexion</h2>
-    <div class="container">
+<!doctype html>
+<html>
+    <head>
+        <title>Login - Equinox</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+    </head>
+<body>
+    <div class="form-container">
+        <div class="menu">
+            <a href="./login" class="current">LOGIN</a>
+            <a href="./register">REGISTER</a>
+        </div>
         <form action="{{ url_for('login') }}" method="post">
-            <label for="username"><b>Pseudo</b></label>
-            <input type="text" placeholder="Entrez votre pseudo" name="username" id="username" required>
-            <label for="password"><b>Mot de passe</b></label>
-            <input type="password" placeholder="Entrez votre mot de passe" name="password" id="password" required>
+            <label for="username">Nom d'utilisateur :</label><br />
+            <input type="text" placeholder="Entrez votre pseudo" name="username" id="username" required><br />
+            <label for="password">Mot de passe :</label><br />
+            <input type="password" placeholder="Entrez votre mot de passe" name="password" id="password" required><br />
             <div class="msg">{{ msg }}</div>
-            <input type="submit" value="Login">
+            <input class="submit-button" type="submit" value="Login">
         </form>
     </div>
-
-{% endblock %}
+</body>
+</html>
