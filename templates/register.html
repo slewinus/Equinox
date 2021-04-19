@@ -11,10 +11,15 @@
             <a href="./register" class="current">REGISTER</a>
         </div>
         <form action="{{ url_for('register') }}" method="post">
-            <label for="username">Nom d'utilisateur :</label><br />
+            <label for="username"><b>Nom d'utilisateur :</b></label><br />
             <input type="text" placeholder="Entrez votre pseudo" name="username" id="username" required><br />
-            <label for="password">Mot de passe :</label><br />
+            <label for="mail"><b>Mail</b></label><br />
+            <input type="text" placeholder="Entrez votre mail" name="mail" id="mail" required><br />
+            <label for="password"><b>Mot de passe :</b></label><br />
             <input type="password" placeholder="Entrez votre mot de passe" name="password" id="password" required><br />
+            <label for="confirmpassword"><b>Confirmez votre mot de passe</b></label><br />
+            <input type="password" placeholder="Confirmez votre mot de passe" name="comfirmpassword" id="confirmpassword" required><br />
+            <input type="checkbox" name="conditionsutilisation" value="conditionsutilisation" id="cu" required/>En cochant cette case je m'engage à respecter les conditions d'utilisation d'Equinox.<br/>
             <div class="msg">{{ msg }}</div>
             <input class="submit-button" type="submit" value="Register">
         </form>
