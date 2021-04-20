@@ -5,8 +5,8 @@ body, html{
     font-family: Calibri, arial, serif;
 }
 
-p, a, label, input{
-    color: #82828a;
+p, a, label{
+    color: #575353;
     overflow-wrap: break-word;
 }
 
@@ -19,6 +19,7 @@ p, a, label, input{
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    border-radius: 6px;
 }
 
 .form-container > form{
@@ -29,7 +30,7 @@ p, a, label, input{
 
 .submit-button{
     margin: 5px 0 5px 0;
-    width: 50px;
+    width: 60px;
     height: 35px;
     background-color: #383d41;
     border: 0;
@@ -57,7 +58,7 @@ p, a, label, input{
     font-size: 20px;
     text-decoration: none;
     text-align: center;
-    background-color: #45494c;
+    background-color: #575353;
     width: 50%;
     color: #2c2f33;
 }
@@ -65,4 +66,11 @@ p, a, label, input{
 .menu > .current{
     background-color: #2c2f33;
     color: #575353;
+}
+
+.text-input{
+    background-color:#575353;
+    box-shadow: none;
+    border: black solid 1px;
+    color: #2c2f33;
 }

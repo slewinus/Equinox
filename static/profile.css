@@ -1,0 +1,11 @@
+.text-input{
+    background-color:#575353;
+    box-shadow: none;
+    border: black solid 1px;
+    color: #2c2f33;
+}
+
+.profile-form{
+    text-align: center;
+    margin-top: 20px;
+}
