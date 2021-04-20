@@ -21,10 +21,50 @@ def connect():
 @app.route('/')
 def home():
     if 'loggedin' in session and 'username' in session:
-        user_id = session['id']
-        subs, posts = get_content(user_id)
-        return render_template('index.html', subs=subs, posts=posts, user=User(session['username'], session['password'], session['img_link']))
+        subs, posts = get_content()
+        user = User(session['username'], session['password'], session['firstname'], session['lastname'], session['img_link'], session['bio'])
+        return render_template('index.html', subs=subs, posts=posts, user=user)
     return redirect(url_for('login'))
+
+
+@app.route('/profile', methods=['GET', 'POST'])
+def profile():
+    if 'loggedin' in session:
+        mydb = connect()
+        # Output message if something goes wrong...
+        msg = ''
+        if request.method == 'POST':
+            username = request.form['username']
+            password = request.form['password']
+            img_link = request.form['img_link']
+            firstname = request.form['firstname']
+            lastname = request.form['lastname']
+            bio = request.form['bio']
+            cursor = mydb.cursor()
+            cursor.execute('SELECT * FROM user WHERE username = %s', (username,))
+            account = cursor.fetchone()
+            cursor.close()
+            if account and account[0] != session['id']:
+                msg = 'username already exists'
+            else:
+                cursor = mydb.cursor()
+                cursor.execute('UPDATE user SET username = %s, password = %s, img_link = %s, firstname = %s, lastname = %s, bio = %s WHERE id = %s', (username, password, img_link, firstname, lastname, bio, session['id']))
+                mydb.commit()
+                session['username'] = username
+                session['password'] = password
+                session['img_link'] = img_link
+                session['firstname'] = firstname
+                session['lastname'] = lastname
+                session['bio'] = bio
+                print(bio, session['id'])
+                msg = 'updated profile!'
+        # Show the login form with message (if any)
+        user = User(session['username'], session['password'], session['firstname'], session['lastname'],
+                    session['img_link'], session['bio'])
+        subs, posts = get_content()
+        return render_template('profile.html', msg=msg, subs=subs, posts=posts, user=user)
+    else:
+        return redirect(url_for('login'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -48,8 +88,11 @@ def login():
             session['loggedin'] = True
             session['id'] = account[0]
             session['username'] = account[1]
+            session['firstname'] = account[2]
+            session['lastname'] = account[3]
             session['password'] = account[4]
             session['img_link'] = account[5]
+            session['bio'] = account[6]
             # Redirect to home page
             cursor.close()
             return redirect(url_for('home'))
@@ -116,7 +159,7 @@ def like_post():
     return render_template('index.html')
 
 
-def get_content(user_id):
+def get_content():
     mydb = connect()
     cursor = mydb.cursor()
     user_id = session['id']
@@ -136,7 +179,7 @@ def get_content(user_id):
     for p in result:
         cursor.execute('SELECT * FROM user WHERE id=%s', (p[0],))
         u = cursor.fetchone()
-        u = User(u[1], u[4], u[5])
+        u = User(u[1], '', u[2], u[3], u[5], u[6])
         cursor.execute('SELECT * FROM communities WHERE id=%s', (p[7],))
         c = cursor.fetchone()
         if c is not None:
