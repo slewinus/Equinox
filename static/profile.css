@@ -1,11 +1,34 @@
 .text-input{
-    background-color:#575353;
+    background-color: #5f6366;
     box-shadow: none;
     border: black solid 1px;
-    color: #2c2f33;
+    font-family: roboto;
+    color: #c3c4c6;
 }
 
 .profile-form{
     text-align: center;
     margin-top: 20px;
+}
+
+.card {
+  margin: 0 auto;
+  width: 450px;
+  height: 620px;
+  display: table;
+  grid-template-columns: 300px;
+  grid-template-rows: 100px;
+  border-radius: 18px;
+  background: #2c3034;
+  box-shadow: 5px 5px 15px rgba(0,0,0,0.9);
+  font-family: roboto;
+  text-align: center;
+
+  transition: 0.5s ease;
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 5px 5px 15px rgba(0,0,0,0.6);
 }
