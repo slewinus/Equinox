@@ -62,7 +62,7 @@ p, h1, h2, h3, h4, h5, h6, a, li{
 .sub_list > li{
     list-style: none;
     min-height: 40px;
-    background-color: #25282b;
+    background-color: #32363a;
     margin-bottom: 20px;
 	padding: 10px 0 10px 10px;
     border-radius: 5px;
@@ -124,7 +124,7 @@ p, h1, h2, h3, h4, h5, h6, a, li{
 .right_side_menu > li{
     list-style: none;
     height: 40px;
-    background-color: #292c30;
+    background-color: #32363a;
     margin-bottom: 20px;
 	padding: 10px 0 10px 15px;
 	background-repeat: no-repeat;
@@ -149,7 +149,7 @@ p, h1, h2, h3, h4, h5, h6, a, li{
     width: 80%;
     text-decoration: none;
     font-weight: bold;
-    color: #82828a;
+    color: #C0C0C0;
 }
 @media only screen and (max-width: 1450px) {
     .right_side_menu > li > a > .link_text {
