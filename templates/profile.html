@@ -12,6 +12,7 @@
 
 {% block content %}
     <form class="profile-form" action="{{ url_for('profile') }}" method="post">
+        <div class="card">
             <label for="username">Nom d'utilisateur :</label><br />
             <input class="text-input" type="text" placeholder="Entrez votre pseudo" name="username" id="username" value="{{ user.get_username() }}" required><br />
             <label for="password">Mot de passe :</label><br />
@@ -26,7 +27,8 @@
             <textarea class="text-input" rows="20" cols="50" name="bio" id="bio">{{ user.get_bio() }}</textarea>
             <div class="msg">{{ msg }}</div>
             <input class="submit-button" type="submit" value="Mettre à jour">
-        </form>
+        </div>
+    </form>
 {% endblock %}
 
 {% block right %}
