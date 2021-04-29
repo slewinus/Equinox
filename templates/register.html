@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Register - Equinox</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+    </head>
+<body>
+    <div class="form-container">
+        <div class="menu">
+            <a href="./login">LOGIN</a>
+            <a href="./register" class="current">REGISTER</a>
+        </div>
+        <form action="{{ url_for('register') }}" method="post">
+            <label for="username">Nom d'utilisateur :</label><br />
+            <input type="text" placeholder="Entrez votre pseudo" name="username" id="username" required><br />
+            <label for="password">Mot de passe :</label><br />
+            <input type="password" placeholder="Entrez votre mot de passe" name="password" id="password" required><br />
+            <div class="msg">{{ msg }}</div>
+            <input class="submit-button" type="submit" value="Register">
+        </form>
+    </div>
+</body>
+</html>

@@ -1,50 +1,196 @@
-from flask import Flask, render_template
-from classes import User, GraphDic, Community, Submission
+import mysql.connector
+import os
+import re
+from flask import Flask, render_template, redirect, url_for, session, request
+
+from classes import User, Community, Submission
 
 app = Flask(__name__)
 
-comm = []
-posts = []
+app.secret_key = os.urandom(12).hex()
 
-dev = Community("Developpement Web", "https://www.iconninja.com/files/134/910/544/network-website-web-internet-icon.svg")
-games = Community("Jeux vidéos", "https://www.iconninja.com/files/574/642/378/b-controller-game-icon.svg")
 
-comm.append(dev)
-comm.append(games)
-
-elliott = User("Elliott", "purple2003", "https://www.pngkey.com/png/full/204-2049354_ic-account-box-48px-profile-picture-icon-square.png")
-
-post1 = Submission(elliott, "Hello World!", "What am I to become?", 2021, 19, 0, dev,
-                   "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Robot-icon.svg/1200px-Robot-icon.svg.png")
-post2 = Submission(elliott, "Second post!", """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam tristique mauris lacus, nec pulvinar diam mollis quis. In aliquam tellus et nibh mattis, vitae imperdiet sem maximus. Donec tempor tellus tellus, in volutpat libero commodo non. Sed molestie felis eget enim vestibulum, quis pretium mi egestas. Pellentesque ut tempor justo. Nulla dictum arcu vel diam finibus tristique. Nullam tortor nulla, elementum eget consequat vitae, faucibus in nulla. Fusce mattis id dolor vel luctus. Cras et turpis at ex porttitor tincidunt. Mauris ante mi, eleifend mollis diam laoreet, faucibus accumsan dui.
-
-Curabitur sit amet elit consectetur, ultricies eros viverra, tempus eros. Sed efficitur, purus ut porttitor hendrerit, velit ex laoreet lorem, eget posuere purus arcu eu libero. Suspendisse fermentum posuere bibendum. Aliquam porttitor augue dolor, vel finibus neque posuere nec. Etiam egestas enim ligula, in euismod est fermentum ut. Nullam quis nulla risus. In elementum porttitor nunc, vel efficitur nisi. Ut et ante ac lectus fermentum pellentesque in ut turpis. Mauris faucibus dui lectus, nec posuere arcu fringilla nec. Etiam pretium, justo nec molestie ornare, nunc dui finibus urna, eu hendrerit velit nulla at erat. Integer ac nulla mollis, convallis turpis at, porta nibh. Proin mattis arcu non nibh scelerisque eleifend a in eros. Nam in posuere arcu.
-
-Phasellus finibus rutrum lectus quis commodo. Ut vel dignissim nisi. Proin eleifend auctor eros, sagittis rhoncus orci egestas eu. Aenean at augue ipsum. Integer eget faucibus mauris. Fusce a justo a mi blandit pharetra vel hendrerit elit. Sed malesuada sagittis tellus, sed ultrices mi rhoncus sed. Cras eget eros justo. Ut non pretium orci. Donec sed nisl varius, varius velit sit amet, varius nunc. Aenean tristique feugiat tellus at accumsan.
-
-Fusce euismod orci nec lobortis pellentesque. Mauris nec velit urna. Suspendisse potenti. Aenean euismod vulputate dignissim. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. In lorem magna, maximus eu lobortis vel, laoreet at mi. Nam et ligula imperdiet, interdum elit ut, varius odio. Nunc accumsan, felis vel consectetur fringilla, dolor libero suscipit nunc, vitae interdum mi massa id nunc.""",
-                   150, 12, 1, games)
-oscar = User("Oscar", "efzefezrf", "https://www.pngkey.com/png/full/204-2049354_ic-account-box-48px-profile-picture-icon-square.png")
-frederic = User("Frederic", "zegzegze", "https://www.pngkey.com/png/full/204-2049354_ic-account-box-48px-profile-picture-icon-square.png")
-zoe = User("Zoe", "zoelpb", "https://www.pngkey.com/png/full/204-2049354_ic-account-box-48px-profile-picture-icon-square.png")
-suggestions = [oscar, frederic, zoe]
-posts.append(post1)
-posts.append(post2)
+def connect():
+    return mysql.connector.connect(
+        host="sql280.main-hosting.eu",
+        user="u938835060_test",
+        password="AGIEXx6hB]",
+        database="u938835060_elliott")
 
 
 @app.route('/')
-def index():
-    return render_template('index.html', subs=comm, user=elliott, posts=posts)
+def home():
+    if 'loggedin' in session and 'username' in session:
+        subs, posts = get_content()
+        user = User(session['username'], session['password'], session['firstname'], session['lastname'], session['img_link'], session['bio'])
+        return render_template('index.html', subs=subs, posts=posts, user=user)
+    return redirect(url_for('login'))
+
+
+@app.route('/profile', methods=['GET', 'POST'])
+def profile():
+    if 'loggedin' in session:
+        mydb = connect()
+        # Output message if something goes wrong...
+        msg = ''
+        if request.method == 'POST':
+            username = request.form['username']
+            password = request.form['password']
+            img_link = request.form['img_link']
+            firstname = request.form['firstname']
+            lastname = request.form['lastname']
+            bio = request.form['bio']
+            cursor = mydb.cursor()
+            cursor.execute('SELECT * FROM user WHERE username = %s', (username,))
+            account = cursor.fetchone()
+            cursor.close()
+            if account and account[0] != session['id']:
+                msg = 'username already exists'
+            else:
+                cursor = mydb.cursor()
+                cursor.execute('UPDATE user SET username = %s, password = %s, img_link = %s, firstname = %s, lastname = %s, bio = %s WHERE id = %s', (username, password, img_link, firstname, lastname, bio, session['id']))
+                mydb.commit()
+                session['username'] = username
+                session['password'] = password
+                session['img_link'] = img_link
+                session['firstname'] = firstname
+                session['lastname'] = lastname
+                session['bio'] = bio
+                print(bio, session['id'])
+                msg = 'updated profile!'
+        # Show the login form with message (if any)
+        user = User(session['username'], session['password'], session['firstname'], session['lastname'],
+                    session['img_link'], session['bio'])
+        subs, posts = get_content()
+        return render_template('profile.html', msg=msg, subs=subs, posts=posts, user=user)
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    mydb = connect()
+    # Output message if something goes wrong...
+    msg = ''
+    # Check if "username" and "password" POST requests exist (user submitted form)
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
+        # Create variables for easy access
+        username = request.form['username']
+        password = request.form['password']
+        # Check if account exists using MySQL
+        cursor = mydb.cursor()
+        cursor.execute('SELECT * FROM user WHERE username = %s AND password = %s', (username, password,))
+        # Fetch one record and return result
+        account = cursor.fetchone()
+        # If account exists in accounts table in out database
+        if account:
+            # Create session data, we can access this data in other routes
+            session['loggedin'] = True
+            session['id'] = account[0]
+            session['username'] = account[1]
+            session['firstname'] = account[2]
+            session['lastname'] = account[3]
+            session['password'] = account[4]
+            session['img_link'] = account[5]
+            session['bio'] = account[6]
+            # Redirect to home page
+            cursor.close()
+            return redirect(url_for('home'))
+        else:
+            # Account doesnt exist or username/password incorrect
+            msg = 'Incorrect username/password!'
+    # Show the login form with message (if any)
+    return render_template('login.html', msg=msg)
+
+
+@app.route('/logout')
+def logout():
+    # Remove session data, this will log the user out
+    session.pop('loggedin', None)
+    session.pop('id', None)
+    session.pop('username', None)
+    # Redirect to login page
+    return redirect(url_for('login'))
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    mydb = connect()
+    # Output message if something goes wrong...
+    msg = ''
+    # Check if "username", "password" and "email" POST requests exist (user submitted form)
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
+        # Create variables for easy access
+        username = request.form['username']
+        password = request.form['password']
+        # Check if account exists using MySQL
+        cursor = mydb.cursor()
+        cursor.execute('SELECT * FROM user WHERE username = %s', (username,))
+        account = cursor.fetchone()
+        # If account exists show error and validation checks
+        if account:
+            msg = 'Account already exists!'
+        elif not re.match(r'[A-Za-z0-9]+', username):
+            msg = 'Username must contain only characters and numbers!'
+        elif not username or not password:
+            msg = 'Please fill out the form!'
+        else:
+            # Account doesnt exists and the form data is valid, now insert new account into accounts table
+            cursor.execute('INSERT INTO user VALUES (NULL, %s, "", "", %s, "")', (username, password,))
+            mydb.commit()
+            msg = 'You have successfully registered!'
+        cursor.close()
+    elif request.method == 'POST':
+        # Form is empty... (no POST data)
+        msg = 'Please fill out the form!'
+    # Show registration form with message (if any)
+    return render_template('register.html', msg=msg)
 
 
 @app.route('/suggestions/')
 def suggest():
-    return render_template('suggestions.html', user=elliott, subs=comm, sugg=suggestions)
+    if 'loggedin' in session:
+        return render_template('suggestions.html')
+    return redirect(url_for('login'))
 
 
 @app.route('/like_post/', methods=['POST'])
 def like_post():
-    return render_template('index.html', subs=comm, user=elliott, posts=posts)
+    return render_template('index.html')
+
+
+def get_content():
+    mydb = connect()
+    cursor = mydb.cursor()
+    user_id = session['id']
+    cursor.execute(
+        'SELECT c.id, c.name, c.img_link FROM communities AS c JOIN communities_sub AS cs ON c.id = cs.comm_id WHERE cs.user_id = %s',
+        (user_id,))
+    communities = cursor.fetchall()
+    subs = [Community(s[1], s[2]) for s in communities]
+
+    cursor.execute('SELECT posts.user_id, posts.title, posts.text, posts.likes, posts.dislikes, posts.id, posts.img_link, posts.comm_id FROM posts JOIN friendships AS f ON posts.user_id = f.user1_id WHERE f.user2_id = %s', (user_id,))
+    result = cursor.fetchall()
+    cursor.execute(
+        'SELECT posts.user_id, posts.title, posts.text, posts.likes, posts.dislikes, posts.id, posts.img_link, posts.comm_id FROM posts JOIN friendships AS f ON posts.user_id = f.user2_id WHERE f.user1_id = %s',
+        (user_id,))
+    result += cursor.fetchall()
+    posts = []
+    for p in result:
+        cursor.execute('SELECT * FROM user WHERE id=%s', (p[0],))
+        u = cursor.fetchone()
+        u = User(u[1], '', u[2], u[3], u[5], u[6])
+        cursor.execute('SELECT * FROM communities WHERE id=%s', (p[7],))
+        c = cursor.fetchone()
+        if c is not None:
+            c = Community(c[1], c[2])
+        if p[6] == '':
+            img = None
+        else:
+            img = p[6]
+        posts.append(Submission(u, p[1], p[2], p[3], p[4], p[5], c, img))
+    cursor.close()
+    return subs, posts
 
 
 if __name__ == '__main__':

@@ -1,10 +1,11 @@
 class User:
-    def __init__(self, n, p, pp):
+    def __init__(self, n, p, f, last, pp, b):
         self.username = n
         self.password = p
-        self.bio = str()
+        self.firstname = f
+        self.lastname = last
+        self.bio = b
         self.pic_link = pp
-        self.age = None
 
     def get_password(self):
         return self.password
@@ -17,6 +18,12 @@ class User:
 
     def get_picture_link(self):
         return self.pic_link
+
+    def get_firstname(self):
+        return self.firstname
+
+    def get_lastname(self):
+        return self.lastname
 
 
 class Community:
@@ -53,6 +60,9 @@ class Submission:
 
     def get_community(self):
         return self.community
+
+    def has_community(self):
+        return self.community is not None
 
     def has_image(self):
         return self.image_link is not None
