@@ -12,9 +12,9 @@
         </div>
         <form action="{{ url_for('register') }}" method="post">
             <label for="username">Nom d'utilisateur :</label><br />
-            <input type="text" placeholder="Entrez votre pseudo" name="username" id="username" required><br />
+            <input class="text-input" type="text" placeholder="Entrez votre pseudo" name="username" id="username" required><br />
             <label for="password">Mot de passe :</label><br />
-            <input type="password" placeholder="Entrez votre mot de passe" name="password" id="password" required><br />
+            <input class="text-input" type="password" placeholder="Entrez votre mot de passe" name="password" id="password" required><br />
             <div class="msg">{{ msg }}</div>
             <input class="submit-button" type="submit" value="Register">
         </form>

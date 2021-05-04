@@ -56,13 +56,49 @@ def profile():
                 session['firstname'] = firstname
                 session['lastname'] = lastname
                 session['bio'] = bio
-                print(bio, session['id'])
                 msg = 'updated profile!'
         # Show the login form with message (if any)
         user = User(session['username'], session['password'], session['firstname'], session['lastname'],
                     session['img_link'], session['bio'])
         subs, posts = get_content()
         return render_template('profile.html', msg=msg, subs=subs, posts=posts, user=user)
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route('/friend-request', methods=['GET', 'POST'])
+def friend_request():
+    if 'loggedin' in session:
+        mydb = connect()
+        # Output message if something goes wrong...
+        msg = ''
+        msg2=''
+        if request.method == 'POST':
+            if 'username' in request.form:
+                username = request.form['username']
+                cursor = mydb.cursor()
+                cursor.execute('SELECT * FROM user WHERE username = %s', (username,))
+                user2_id = cursor.fetchone()[0]
+                cursor.close()
+                cursor = mydb.cursor()
+                cursor.execute('INSERT INTO friend_request VALUES (NULL, %s, %s)', (str(session['id']), str(user2_id),))
+                mydb.commit()
+                msg = 'Friend request sent!'
+            else:
+                user_id = request.form['user_id']
+                cursor = mydb.cursor()
+                cursor.execute('INSERT INTO friendships VALUES (NULL, %s, %s)', (session['id'], user_id,))
+                mydb.commit()
+                cursor = mydb.cursor()
+                cursor.execute('DELETE FROM friend_request WHERE user1_id = %s AND user2_id = %s ', (user_id, session['id'],))
+                mydb.commit()
+                msg2 = 'Demande acceptée!'
+        # Show the login form with message (if any)
+        user = User(session['username'], session['password'], session['firstname'], session['lastname'],
+                    session['img_link'], session['bio'])
+        subs, posts = get_content()
+        requests = get_friend_requests()
+        return render_template('friend-request.html', msg=msg, msg2=msg2, subs=subs, posts=posts, user=user, requ=requests)
     else:
         return redirect(url_for('login'))
 
@@ -191,6 +227,14 @@ def get_content():
         posts.append(Submission(u, p[1], p[2], p[3], p[4], p[5], c, img))
     cursor.close()
     return subs, posts
+
+
+def get_friend_requests():
+    mydb = connect()
+    cursor = mydb.cursor()
+    user_id = session['id']
+    cursor.execute('SELECT f.id, u.username, u.id FROM friend_request AS f JOIN user AS u ON u.id = f.user1_id WHERE f.user2_id = %s', (session['id'],))
+    return cursor.fetchall()
 
 
 if __name__ == '__main__':
