@@ -98,8 +98,8 @@ def amis():
                     session['img_link'], session['bio'])
         subs, posts = get_content()
         requests = get_friend_requests()
-        liste_amis
-        return render_template('friend-request.html', msg=msg, msg2=msg2, subs=subs, posts=posts, user=user, requ=requests)
+        liste_amis = friends_list()
+        return render_template('friend-request.html', msg=msg, msg2=msg2, subs=subs, posts=posts, user=user, requ=requests, amis=liste_amis)
     else:
         return redirect(url_for('login'))
 
@@ -173,7 +173,7 @@ def register():
             msg = 'Please fill out the form!'
         else:
             # Account doesnt exists and the form data is valid, now insert new account into accounts table
-            cursor.execute('INSERT INTO user VALUES (NULL, %s, "", "", %s, "")', (username, password,))
+            cursor.execute('INSERT INTO user VALUES (NULL, %s, "", "", %s, "", "")', (username, password,))
             mydb.commit()
             msg = 'You have successfully registered!'
         cursor.close()
@@ -241,10 +241,10 @@ def get_friend_requests():
 def friends_list():
     mydb = connect()
     cursor = mydb.cursor()
-    cursor.execute('SELECT user2_id, u.username FROM friendships JOIN user AS u ON u.id = user2_id WHERE user1_id = %s', (session['id'],))
+    cursor.execute('SELECT f.user2_id, u.username, u.img_link FROM friendships AS f JOIN user AS u ON u.id = f.user2_id WHERE f.user1_id = %s', (session['id'],))
     liste_amis = cursor.fetchall()
     cursor = mydb.cursor()
-    cursor.execute('SELECT user1_id, u.username FROM friendships JOIN user AS u ON u.id = user1_id WHERE user2_id = %s', (session['id'],))
+    cursor.execute('SELECT f.user1_id, u.username, u.img_link FROM friendships AS f JOIN user AS u ON u.id = f.user1_id WHERE f.user2_id = %s', (session['id'],))
     liste_amis += cursor.fetchall()
     return liste_amis
 

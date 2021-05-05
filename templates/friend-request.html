@@ -28,7 +28,12 @@
         {% endfor %}
     </div>
     <div class="amis-liste">
-
+        {% for ami in amis %}
+        <div class="ami">
+            <h3 class="nom_ami">{{ ami[1] }}</h3>
+            <img src="{{ ami[2] }}" alt="photo de profil"/>
+        </div>
+        {% endfor %}
     </div>
 
 {% endblock %}
