@@ -173,7 +173,7 @@ def register():
             msg = 'Please fill out the form!'
         else:
             # Account doesnt exists and the form data is valid, now insert new account into accounts table
-            cursor.execute('INSERT INTO user VALUES (NULL, %s, "", "", %s, "", "")', (username, password,))
+            cursor.execute('INSERT INTO user VALUES (NULL, %s, "", "", %s, "https://www.pngkey.com/png/full/204-2049354_ic-account-box-48px-profile-picture-icon-square.png", "")', (username, password,))
             mydb.commit()
             msg = 'You have successfully registered!'
         cursor.close()
