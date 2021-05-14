@@ -1,10 +1,29 @@
+.wrapper{
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+}
+
+.amis-gauche{
+    width: 50%;
+    border-right: 2px solid black;
+    padding-top: 20px;
+    text-align: center;
+}
+
+.amis-droite{
+    padding-top: 20px;
+    width: 50%;
+    text-align: center;
+}
+
 .amis-liste{
     margin-left: 50px;
 }
 .ami{
     display: flex;
     flex-direction: row;
-    height: 50px;
+    height: 40px;
     background-color: #32363a;
     margin-bottom: 20px;
 	padding: 10px 0 10px 15px;
@@ -14,8 +33,13 @@
 
 .photo-ami{
     object-fit: cover;
-    height: 40px;
-    width: 40px;
+    height: 35px;
+    width: 35px;
     padding-left: 10px;
     padding-right: 10px;
+}
+
+.nom-ami{
+    padding: 0;
+    line-height: 0.1;
 }

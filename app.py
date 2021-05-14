@@ -203,13 +203,35 @@ def like_post():
     return render_template('index.html')
 
 
+@app.route('/post/', methods=['GET', 'POST'])
+def post():
+    if 'loggedin' in session and 'username' in session:
+        mydb = connect()
+        msg = ''
+        if request.method == 'POST' and 'content' in request.form and 'titre' in request.form:
+            titre = request.form['titre']
+            content = request.form['content']
+            community = request.form['community']
+            img = request.form['img']
+            cursor = mydb.cursor()
+            cursor.execute('INSERT INTO posts VALUES(NULL, %s, %s, %s, %s, 0, 0, %s)', (str(session['id']), str(titre), str(content), str(img), str(community),))
+            mydb.commit()
+            cursor.close()
+            msg = 'Post envoyé!'
+        user = User(session['username'], session['password'], session['firstname'], session['lastname'],
+                    session['img_link'], session['bio'])
+        subs, posts = get_content()
+        return render_template('post.html', msg=msg, subs=subs, posts=posts, user=user)
+    return redirect(url_for('login'))
+
+
 def get_content():
     mydb = connect()
     cursor = mydb.cursor()
     user_id = session['id']
     cursor.execute('SELECT c.id, c.name, c.img_link FROM communities AS c')
     communities = cursor.fetchall()
-    subs = [Community(s[1], s[2]) for s in communities]
+    subs = [Community(s[0], s[1], s[2]) for s in communities]
 
     cursor.execute('SELECT posts.user_id, posts.title, posts.text, posts.likes, posts.dislikes, posts.id, posts.img_link, posts.comm_id FROM posts JOIN friendships AS f ON posts.user_id = f.user1_id WHERE f.user2_id = %s', (user_id,))
     result = cursor.fetchall()
@@ -225,7 +247,7 @@ def get_content():
         cursor.execute('SELECT * FROM communities WHERE id=%s', (p[7],))
         c = cursor.fetchone()
         if c is not None:
-            c = Community(c[1], c[2])
+            c = Community(c[0], c[1], c[2])
         if p[6] == '':
             img = None
         else:

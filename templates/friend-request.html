@@ -11,31 +11,43 @@
 {% endblock %}
 
 {% block content %}
-    <div class="amis-suggestions">
-        <form class="request-form" action="{{ url_for('amis') }}" method="post">
-            <input type="text" placeholder="Entrez le nom d'utilisateur :" name="username" id="username">
-            <div class="msg">{{ msg }}</div>
-            <input class="submit-button" type="submit" value="Demander en ami">
-        </form>
-        {% for r in requ %}
-        <form action="{{ url_for('amis') }}" method="post">
-            <p>{{ r[1] }}</p>
-            <input type="hidden" value="{{ r[0] }}" name="request_id" id="request_id">
-            <input type="hidden" value="{{ r[2] }}" name="user_id" id="user_id">
-            <div class="msg2">{{ msg2 }}</div>
-            <input class="submit-button" type="submit" value="Accepter">
-        </form>
-        {% endfor %}
-    </div>
-    <div class="amis-liste">
-        {% for ami in amis %}
-        <div class="ami">
-            <img class="photo-ami" src="{{ ami[2] }}" alt="photo de profil"/>
-            <h3 class="nom-ami">{{ ami[1] }}</h3>
+    <div class="wrapper">
+        <div class="amis-gauche">
+            <div class="amis-demandes">
+                {% for r in requ %}
+                <form action="{{ url_for('amis') }}" method="post">
+                    <p>{{ r[1] }}</p>
+                    <input type="hidden" value="{{ r[0] }}" name="request_id" id="request_id">
+                    <input type="hidden" value="{{ r[2] }}" name="user_id" id="user_id">
+                    <div class="msg2">{{ msg2 }}</div>
+                    <input class="submit-button" type="submit" value="Accepter">
+                </form>
+                {% endfor %}
+            </div>
+            <div class="amis-liste">
+                {% for ami in amis %}
+                <div class="ami">
+                    <img class="photo-ami" src="{{ ami[2] }}" alt="photo de profil"/>
+                    <h3 class="nom-ami">{{ ami[1] }}</h3>
+                </div>
+                {% endfor %}
+            </div>
         </div>
-        {% endfor %}
+        <div class="amis-droite">
+            <form class="request-form" action="{{ url_for('amis') }}" method="post">
+                <input type="text" placeholder="Entrez le nom d'utilisateur :" name="username" id="username">
+                <div class="msg">{{ msg }}</div>
+                <input class="submit-button" type="submit" value="Demander en ami">
+            </form>
+            <div class="amis-suggestions">
+                <ul>
+                    <li>Suggestion 1 : fjzeofzef</li>
+                    <li>Suggestion 2 : zjzfzefzef</li>
+                    <li>Suggestion 3 : zefzefzefzef</li>
+                </ul>
+            </div>
+        </div>
     </div>
-
 {% endblock %}
 
 {% block right %}

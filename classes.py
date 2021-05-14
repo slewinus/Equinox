@@ -27,7 +27,8 @@ class User:
 
 
 class Community:
-    def __init__(self, n, i):
+    def __init__(self, id, n, i):
+        self.id = id
         self.name = n
         self.icon_link = i
 
@@ -36,6 +37,9 @@ class Community:
 
     def get_icon_link(self):
         return self.icon_link
+
+    def get_id(self):
+        return self.id
 
 
 class Submission:
