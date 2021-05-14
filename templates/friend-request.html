@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}Friend Requests{% endblock %}
-{% block css %}<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='profile.css') }}">{% endblock %}
+{% block css %}<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='amis.css') }}">{% endblock %}
 {% block left %}
     <h2 class="sub_title">Communities:</h2>
     <ul class="sub_list">
@@ -30,8 +30,8 @@
     <div class="amis-liste">
         {% for ami in amis %}
         <div class="ami">
-            <h3 class="nom_ami">{{ ami[1] }}</h3>
-            <img src="{{ ami[2] }}" alt="photo de profil"/>
+            <img class="photo-ami" src="{{ ami[2] }}" alt="photo de profil"/>
+            <h3 class="nom-ami">{{ ami[1] }}</h3>
         </div>
         {% endfor %}
     </div>

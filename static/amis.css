@@ -1,0 +1,21 @@
+.amis-liste{
+    margin-left: 50px;
+}
+.ami{
+    display: flex;
+    flex-direction: row;
+    height: 50px;
+    background-color: #32363a;
+    margin-bottom: 20px;
+	padding: 10px 0 10px 15px;
+    width: 80%;
+    border-radius: 9px;
+}
+
+.photo-ami{
+    object-fit: cover;
+    height: 40px;
+    width: 40px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
