@@ -1,71 +1,133 @@
-body, html{
-    max-height: 100%;
-    max-width: 100%;
-    background-color: #383d41;
-    font-family: Calibri, arial, serif;
+html {
+    height: 100%;
 }
-
-p, a, label{
-    color: #575353;
-    overflow-wrap: break-word;
-}
-
-.form-container{
-    background-color: #2c2f33;
+body {
+    margin: 0;
     padding: 0;
-    width: 500px;
-    height: 200px;
+    font-family: sans-serif;
+    background: #4B5054;
+}
+.login-box {
     position: absolute;
     top: 50%;
     left: 50%;
+    width: 400px;
+    padding: 40px;
     transform: translate(-50%, -50%);
-    border-radius: 6px;
+    background: #6b6868;
+    box-sizing: border-box;
+    border-radius: 10px;
+    border: 2px solid #000;
 }
-
-.form-container > form{
-    margin-top: 10px;
-    display: block;
+.row{
     text-align: center;
+    margin-top: -100px;
+}
+.login-box img {
+    width: 120px;
+    height: 120px;
+}
+.login-box h2 {
+    margin: 0 0 30px;
+    padding: 0;
+    color: white;
+    text-align: center;
+
+}
+.login-box .user-box {
+    position: relative;
+}
+.login-box .user-box input{
+    width: 100%;
+    padding: 10px 0;
+    font-size: 18px;
+    color: #000;
+    margin-bottom: 10px;
+    border: none;
+    border-bottom: 1px solid black;
+    outline: none;
+    background: #393b3d;
+
+}
+.login-box .user-box label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px 0;
+    font-size: 16px;
+    color: black;
+    pointer-events: none;
+    transition: .5s;
 }
 
-.submit-button{
-    margin: 5px 0 5px 0;
+.login-box .user-box input:focus ~ label,
+.login-box .user-box input:valid ~ label {
+    top: -20px;
+    left: 0;
+    color: black;
+    font-size: 12px;
+}
+span {
+    position: relative;
+    display: inline-flex;
+    width: 120px;
+    height: 45px;
+}
+span a {
+    font-size: 12px;
+    letter-spacing: 1px;
+    transform-style: preserve-3d;
+    transform: translateZ(-25px);
+    transition: transform .25s;
+}
+
+.submit-button {
+    display: block;
+    margin: auto;
     width: 60px;
     height: 35px;
-    background-color: #383d41;
     border: 0;
-    border-radius: 2px;
+    border-radius: 8px;
     box-shadow: 0 3px #2d2d2d;
-    color: grey;
+    color: black;
+    background: #393b3d;
 }
-
 .submit-button:hover{
     background-color: #35383b;
 }
 
-.submit-button:active{
+.submit-button:active {
     box-shadow: 0 1px #000000;
     transform: translateY(2px);
 }
-
 .menu{
+    padding: 1px;
     display: flex;
-    height: 40px;
+    height: 30px;
+    margin-bottom: 20px;
 }
 
 .menu > a{
-    padding-top: 5px;
+    padding-top:5px;
     font-size: 20px;
     text-decoration: none;
     text-align: center;
     background-color: #575353;
     width: 50%;
     color: #2c2f33;
+    border-radius: 2px ;
 }
 
 .menu > .current{
     background-color: #2c2f33;
     color: #575353;
+}
+
+.text-input{
+    background-color:#575353;
+    box-shadow: none;
+    border: black solid 1px;
+    color: #2c2f33;
 }
 
 .text-input{
