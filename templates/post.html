@@ -32,13 +32,13 @@
 
 {% block right %}
     <figure class="right_top_menu">
-        <a href="#"><img class="settings_icon" src="https://www.iconpacks.net/icons/2/free-settings-icon-3110-thumb.png"  alt="settings"/></a>
-        <a href="#"><img class="user_profile_pic" src="{{ user.get_picture_link() }}"  alt="profile"/></a>
+        <a href="/profile"><img class="settings_icon" src="https://www.iconpacks.net/icons/2/free-settings-icon-3110-thumb.png"  alt="settings"/></a>
+        <a href="/profile"><img class="user_profile_pic" src="{{ user.get_picture_link() }}"  alt="profile"/></a>
     </figure>
     <ul class="right_side_menu">
         <li><a href="/"><img class="icon" src="{{ url_for('static', filename='home.png') }}" alt="feed"><span class="link_text">Feed</span></a></li>
         <li><a href="/amis"><img class="icon" src="{{ url_for('static', filename='sugg.png') }}" alt="suggestions"><span class="link_text">Amis</span></a></li>
-        <li><a href="#"><img class="icon" src="{{ url_for('static', filename='sub.png') }}" alt="subquinox"><span class="link_text">Subquinox</span></a></li>
+        <li class="current_page"><a href="/post/"><img class="icon" src="{{ url_for('static', filename='penne.png') }}" alt="post"><span class="link_text">Post</span></a></li>
         <li><a href="#"><img class="icon" src="{{ url_for('static', filename='notification.png') }}" alt="bell"><span class="link_text">Notifications</span></a></li>
     </ul>
 {% endblock %}
