@@ -1,3 +1,8 @@
+
+/************************/
+/*   Register & Login   */
+/************************/
+
 html {
     height: 100%;
 }
@@ -7,6 +12,10 @@ body {
     font-family: sans-serif;
     background: #4B5054;
 }
+
+/************************/
+/*   Box de conection   */
+/************************/
 .login-box {
     position: absolute;
     top: 50%;
@@ -38,11 +47,11 @@ body {
     position: relative;
 }
 .login-box .user-box input{
-    width: 100%;
-    padding: 10px 0;
+    width:  calc(100% - 30px);
     font-size: 18px;
     color: #000;
     margin-bottom: 10px;
+    padding: 10px 10px 10px 20px;
     border: none;
     border-bottom: 1px solid black;
     outline: none;
