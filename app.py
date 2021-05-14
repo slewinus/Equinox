@@ -81,9 +81,16 @@ def amis():
                 user2_id = cursor.fetchone()[0]
                 cursor.close()
                 cursor = mydb.cursor()
-                cursor.execute('INSERT INTO friend_request VALUES (NULL, %s, %s)', (str(session['id']), str(user2_id),))
-                mydb.commit()
-                msg = 'Friend request sent!'
+                cursor.execute('SELECT * FROM friend_request WHERE user1_id = %s AND user2_id = %s', (str(session['id']), str(user2_id),))
+                fr = cursor.fetchone()
+                cursor.close()
+                if fr is None and not is_friend(session['id'], str(user2_id)):
+                    cursor = mydb.cursor()
+                    cursor.execute('INSERT INTO friend_request VALUES (NULL, %s, %s)', (str(session['id']), str(user2_id),))
+                    mydb.commit()
+                    msg = 'Friend request sent!'
+                else :
+                    msg = 'cannot send friend request'
             else:
                 user_id = request.form['user_id']
                 cursor = mydb.cursor()
@@ -200,9 +207,7 @@ def get_content():
     mydb = connect()
     cursor = mydb.cursor()
     user_id = session['id']
-    cursor.execute(
-        'SELECT c.id, c.name, c.img_link FROM communities AS c JOIN communities_sub AS cs ON c.id = cs.comm_id WHERE cs.user_id = %s',
-        (user_id,))
+    cursor.execute('SELECT c.id, c.name, c.img_link FROM communities AS c')
     communities = cursor.fetchall()
     subs = [Community(s[1], s[2]) for s in communities]
 
@@ -247,6 +252,18 @@ def friends_list():
     cursor.execute('SELECT f.user1_id, u.username, u.img_link FROM friendships AS f JOIN user AS u ON u.id = f.user1_id WHERE f.user2_id = %s', (session['id'],))
     liste_amis += cursor.fetchall()
     return liste_amis
+
+
+def is_friend(user1_id, user2_id):
+    mydb = connect()
+    cursor = mydb.cursor()
+    cursor.execute('SELECT * FROM friendships WHERE user1_id = %s AND user2_id = %s', (user1_id, user2_id,))
+    fr1 = cursor.fetchone()
+    cursor.execute('SELECT * FROM friendships WHERE user1_id = %s AND user2_id = %s', (user2_id, user1_id,))
+    fr2 = cursor.fetchone()
+    cursor.close()
+    return fr1 is not None or fr2 is not None
+
 
 
 if __name__ == '__main__':
