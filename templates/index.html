@@ -20,6 +20,7 @@
                 {% if post.has_community() %}
                 <p class="post_community">Subquinox : {{ post.get_community().get_name() }}</p>
                 {% endif %}
+                <p class="post_date">{{ post.get_date() }}</p>
             </div>
             <h4 class="post_title">{{ post.get_title() }}</h4>
             {% if post.has_image() %}

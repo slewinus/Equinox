@@ -43,15 +43,22 @@ class Community:
 
 
 class Submission:
-    def __init__(self, u, t, txt, up, down, id, c=None, im=None):
+    def __init__(self, u, p_id, t, txt, im, up, down, c, d):
         self.user = u
         self.title = t
         self.text = txt
         self.likes = up
         self.dislikes = down
-        self.id = id
+        self.id = p_id
         self.community = c
         self.image_link = im
+        self.date = d
+
+    def __lt__(self, other):
+        return self.date < other.date
+
+    def __gt__(self, other):
+        return self.date > other.date
 
     def get_user(self):
         return self.user
@@ -91,6 +98,9 @@ class Submission:
 
     def get_id(self):
         return self.id
+
+    def get_date(self):
+        return self.date.strftime("%m/%d/%Y, %H:%M")
 
 
 class GraphDic:

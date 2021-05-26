@@ -2,6 +2,7 @@ import mysql.connector
 import os
 import re
 from flask import Flask, render_template, redirect, url_for, session, request
+from datetime import datetime
 
 from classes import User, Community, Submission
 
@@ -213,8 +214,10 @@ def post():
             content = request.form['content']
             community = request.form['community']
             img = request.form['img']
+            now = datetime.now()
+            date = now.strftime('%Y-%m-%d %H:%M:%S')
             cursor = mydb.cursor()
-            cursor.execute('INSERT INTO posts VALUES(NULL, %s, %s, %s, %s, 0, 0, %s)', (str(session['id']), str(titre), str(content), str(img), str(community),))
+            cursor.execute('INSERT INTO posts VALUES(NULL, %s, %s, %s, %s, 0, 0, %s, %s)', (str(session['id']), str(titre), str(content), str(img), str(community), date,))
             mydb.commit()
             cursor.close()
             msg = 'Post envoyé!'
@@ -233,26 +236,30 @@ def get_content():
     communities = cursor.fetchall()
     subs = [Community(s[0], s[1], s[2]) for s in communities]
 
-    cursor.execute('SELECT posts.user_id, posts.title, posts.text, posts.likes, posts.dislikes, posts.id, posts.img_link, posts.comm_id FROM posts JOIN friendships AS f ON posts.user_id = f.user1_id WHERE f.user2_id = %s', (user_id,))
+    cursor.execute('SELECT posts.* FROM posts JOIN friendships AS f ON posts.user_id = f.user1_id WHERE f.user2_id = %s', (user_id,))
     result = cursor.fetchall()
-    cursor.execute(
-        'SELECT posts.user_id, posts.title, posts.text, posts.likes, posts.dislikes, posts.id, posts.img_link, posts.comm_id FROM posts JOIN friendships AS f ON posts.user_id = f.user2_id WHERE f.user1_id = %s',
-        (user_id,))
+    cursor.execute('SELECT posts.* FROM posts JOIN friendships AS f ON posts.user_id = f.user2_id WHERE f.user1_id = %s', (user_id,))
+    result += cursor.fetchall()
+    cursor.execute('SELECT * FROM posts WHERE user_id = %s', (session['id'],))
     result += cursor.fetchall()
     posts = []
     for p in result:
-        cursor.execute('SELECT * FROM user WHERE id=%s', (p[0],))
+        cursor.execute('SELECT * FROM user WHERE id=%s', (p[1],))
         u = cursor.fetchone()
         u = User(u[1], '', u[2], u[3], u[5], u[6])
         cursor.execute('SELECT * FROM communities WHERE id=%s', (p[7],))
         c = cursor.fetchone()
         if c is not None:
             c = Community(c[0], c[1], c[2])
-        if p[6] == '':
+        if p[4] == '':
             img = None
         else:
-            img = p[6]
-        posts.append(Submission(u, p[1], p[2], p[3], p[4], p[5], c, img))
+            img = p[4]
+        posts.append(Submission(u, p[0], p[2], p[3], img, p[5], p[6], c, p[8]))
+    posts.sort()
+    posts.reverse()
+    if len(posts) > 10:
+        posts = posts[:10]
     cursor.close()
     return subs, posts
 
@@ -260,7 +267,6 @@ def get_content():
 def get_friend_requests():
     mydb = connect()
     cursor = mydb.cursor()
-    user_id = session['id']
     cursor.execute('SELECT f.id, u.username, u.id FROM friend_request AS f JOIN user AS u ON u.id = f.user1_id WHERE f.user2_id = %s', (session['id'],))
     return cursor.fetchall()
 
