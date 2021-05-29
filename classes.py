@@ -126,3 +126,19 @@ class GraphDic:
 
     def voisins(self, s):
         return self.dico[s]
+
+
+
+
+class File:
+    def __init__(self):
+        self.v = []
+
+    def enfiler(self, x):
+        self.v.insert(0, x)
+
+    def defiler(self):
+        return self.v.pop()
+
+    def est_vide(self):
+        return len(self.v) == 0

@@ -2,10 +2,8 @@ import mysql.connector
 import os
 import re
 from flask import Flask, render_template, redirect, url_for, session, request
-from datetime import datetime
 
-from classes import User, Community, Submission
-
+from classes import User, Community, Submission, GraphDic, File
 app = Flask(__name__)
 
 app.secret_key = os.urandom(12).hex()
@@ -67,6 +65,49 @@ def profile():
         return redirect(url_for('login'))
 
 
+# @app.route('/amis', methods=['GET', 'POST'])
+# def amis():
+#     if 'loggedin' in session:
+#         mydb = connect()
+#         # Output message if something goes wrong...
+#         msg = ''
+#         msg2=''
+#         if request.method == 'POST':
+#             if 'username' in request.form:
+#                 username = request.form['username']
+#                 cursor = mydb.cursor()
+#                 cursor.execute('SELECT * FROM user WHERE username = %s', (username,))
+#                 user2_id = cursor.fetchone()[0]
+#                 cursor.close()
+#                 cursor = mydb.cursor()
+#                 cursor.execute('SELECT * FROM friend_request WHERE user1_id = %s AND user2_id = %s', (str(session['id']), str(user2_id),))
+#                 fr = cursor.fetchone()
+#                 cursor.close()
+#                 if fr is None and not is_friend(session['id'], str(user2_id)):
+#                     cursor = mydb.cursor()
+#                     cursor.execute('INSERT INTO friend_request VALUES (NULL, %s, %s)', (str(session['id']), str(user2_id),))
+#                     mydb.commit()
+#                     msg = 'Friend request sent!'
+#                 else :
+#                     msg = 'cannot send friend request'
+#             else:
+#                 user_id = request.form['user_id']
+#                 cursor = mydb.cursor()
+#                 cursor.execute('INSERT INTO friendships VALUES (NULL, %s, %s)', (session['id'], user_id,))
+#                 mydb.commit()
+#                 cursor = mydb.cursor()
+#                 cursor.execute('DELETE FROM friend_request WHERE user1_id = %s AND user2_id = %s ', (user_id, session['id'],))
+#                 mydb.commit()
+#                 msg2 = 'Demande acceptée!'
+#         # Show the login form with message (if any)
+#         user = User(session['username'], session['password'], session['firstname'], session['lastname'],
+#                     session['img_link'], session['bio'])
+#         subs, posts = get_content()
+#         requests = get_friend_requests()
+#         liste_amis = friends_list()
+#         return render_template('friend-request.html', msg=msg, msg2=msg2, subs=subs, posts=posts, user=user, requ=requests, amis=liste_amis)
+#     else:
+#         return redirect(url_for('login'))
 @app.route('/amis', methods=['GET', 'POST'])
 def amis():
     if 'loggedin' in session:
@@ -100,14 +141,17 @@ def amis():
                 cursor = mydb.cursor()
                 cursor.execute('DELETE FROM friend_request WHERE user1_id = %s AND user2_id = %s ', (user_id, session['id'],))
                 mydb.commit()
-                msg2 = 'Demande acceptée!'
+                msg2 = 'Demande acceptÃ©e!'
+                cursor.close()
+        mydb.close()
         # Show the login form with message (if any)
         user = User(session['username'], session['password'], session['firstname'], session['lastname'],
                     session['img_link'], session['bio'])
         subs, posts = get_content()
         requests = get_friend_requests()
         liste_amis = friends_list()
-        return render_template('friend-request.html', msg=msg, msg2=msg2, subs=subs, posts=posts, user=user, requ=requests, amis=liste_amis)
+        suggestions = suggestion_amis()
+        return render_template('friend-request.html', msg=msg, msg2=msg2, subs=subs, posts=posts, user=user, requ=requests, amis=liste_amis, sugg=suggestions)
     else:
         return redirect(url_for('login'))
 
@@ -291,6 +335,71 @@ def is_friend(user1_id, user2_id):
     fr2 = cursor.fetchone()
     cursor.close()
     return fr1 is not None or fr2 is not None
+
+def creation_graphe():
+    graphe = GraphDic()
+    mydb = connect()
+    cursor = mydb.cursor()
+    cursor.execute('SELECT * FROM user')
+    users = cursor.fetchall()
+    cursor.execute('SELECT * FROM friendships')
+    friendships = cursor.fetchall()
+    for user in users:
+        graphe.ajouter_sommet(user[0])
+    for friendship in friendships:
+        graphe.ajouter_arc(friendship[1], friendship[2])
+        graphe.ajouter_arc(friendship[2], friendship[1])
+    return graphe
+
+
+def parcours_ch(graphe):
+    vus = {}
+    file = File()
+    file.enfiler((session['id'], None))
+    while not file.est_vide():
+        n_somm, a_somm = file.defiler()
+        if n_somm not in vus:
+            vus[n_somm] = a_somm
+            for v in graphe.voisins(n_somm):
+                file.enfiler((v, n_somm))
+    return vus
+
+
+def distance(parcours, v):
+    chemin = []
+    sommets = parcours
+    if v not in sommets:
+        return None
+    s = v
+    while s is not None:
+        chemin.append(s)
+        s = sommets[s]
+    chemin.reverse()
+    return len(chemin) - 1, chemin[1]
+
+
+def suggestion_amis():
+    mydb = connect()
+    cursor = mydb.cursor()
+    graphe = creation_graphe()
+    suggest = []
+    parcours = parcours_ch(graphe)
+    cursor.execute('SELECT user2_id FROM friend_request WHERE user1_id = %s', (session['id'],))
+    requests = [a[0] for a in cursor.fetchall()]
+    for sommet in graphe.sommets():
+        if sommet != session['id'] and sommet not in graphe.voisins(session['id']) and sommet not in requests:
+            cursor.execute('SELECT username, img_link FROM user WHERE id = %s', (sommet,))
+            answer = cursor.fetchone()
+            dist = distance(parcours, sommet)
+            if dist is not None:
+                suggest.append((dist[0], answer[0], answer[1], dist[1]))
+            else:
+                suggest.append((16, answer[0], answer[1], "personne"))
+    cursor.close()
+    mydb.close()
+    return sorted(suggest)
+
+
 
 
 
