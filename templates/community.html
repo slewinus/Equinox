@@ -1,11 +1,15 @@
 {% extends 'base.html' %}
-{% block title %}HOME{% endblock %}
+{% block title %}{{ comm.get_name() }}{% endblock %}
 
 {% block left %}
     <h2 class="sub_title">Communities:</h2>
     <ul class="sub_list">
         {% for sub in subs %}
-            <li><a href="/community?comm={{ sub.get_id() }}"><img class="sub_img" src="{{ sub.get_icon_link() }}"><h4>{{ sub.get_name() }}</h4></a></li>
+            {% if sub.get_id() == comm.get_id() %}
+                <li class="current_page"><a href="/community?comm={{ sub.get_id() }}"><img class="sub_img" src="{{ sub.get_icon_link() }}"><h4>{{ sub.get_name() }}</h4></a></li>
+            {% else %}
+                <li><a href="/community?comm={{ sub.get_id() }}"><img class="sub_img" src="{{ sub.get_icon_link() }}"><h4>{{ sub.get_name() }}</h4></a></li>
+            {% endif %}
         {% endfor %}
     </ul>
 {% endblock %}
@@ -47,7 +51,7 @@
         <a href="/logout"><img class="" src="https://cdn.discordapp.com/attachments/821417452562546718/846851924238270494/outline_logout_black_24dp.png"/></a>
     </figure>
     <ul class="right_side_menu">
-        <li class="current_page"><a href="/"><img class="icon" src="{{ url_for('static', filename='outline_cottage_black_24dp.png') }}" alt="feed"><span class="link_text">Feed</span></a></li>
+        <li><a href="/"><img class="icon" src="{{ url_for('static', filename='outline_cottage_black_24dp.png') }}" alt="feed"><span class="link_text">Feed</span></a></li>
         <li><a href="/amis"><img class="icon" src="{{ url_for('static', filename='outline_group_black_24dp.png') }}" alt="amis"><span class="link_text">Amis</span></a></li>
         <li><a href="/post/"><img class="icon" src="{{ url_for('static', filename='outline_rate_review_black_24dp.png') }}" alt="post"><span class="link_text">Post</span></a></li>
         <li><a href="#"><img class="icon" src="{{ url_for('static', filename='outline_notifications_black_24dp.png') }}" alt="bell"><span class="link_text">Notifications</span></a></li>

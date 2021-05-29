@@ -4,6 +4,7 @@ import re
 from flask import Flask, render_template, redirect, url_for, session, request
 
 from classes import User, Community, Submission, GraphDic, File
+from datetime import datetime
 app = Flask(__name__)
 
 app.secret_key = os.urandom(12).hex()
@@ -56,6 +57,8 @@ def profile():
                 session['lastname'] = lastname
                 session['bio'] = bio
                 msg = 'updated profile!'
+                cursor.close()
+            mydb.close()
         # Show the login form with message (if any)
         user = User(session['username'], session['password'], session['firstname'], session['lastname'],
                     session['img_link'], session['bio'])
@@ -65,49 +68,6 @@ def profile():
         return redirect(url_for('login'))
 
 
-# @app.route('/amis', methods=['GET', 'POST'])
-# def amis():
-#     if 'loggedin' in session:
-#         mydb = connect()
-#         # Output message if something goes wrong...
-#         msg = ''
-#         msg2=''
-#         if request.method == 'POST':
-#             if 'username' in request.form:
-#                 username = request.form['username']
-#                 cursor = mydb.cursor()
-#                 cursor.execute('SELECT * FROM user WHERE username = %s', (username,))
-#                 user2_id = cursor.fetchone()[0]
-#                 cursor.close()
-#                 cursor = mydb.cursor()
-#                 cursor.execute('SELECT * FROM friend_request WHERE user1_id = %s AND user2_id = %s', (str(session['id']), str(user2_id),))
-#                 fr = cursor.fetchone()
-#                 cursor.close()
-#                 if fr is None and not is_friend(session['id'], str(user2_id)):
-#                     cursor = mydb.cursor()
-#                     cursor.execute('INSERT INTO friend_request VALUES (NULL, %s, %s)', (str(session['id']), str(user2_id),))
-#                     mydb.commit()
-#                     msg = 'Friend request sent!'
-#                 else :
-#                     msg = 'cannot send friend request'
-#             else:
-#                 user_id = request.form['user_id']
-#                 cursor = mydb.cursor()
-#                 cursor.execute('INSERT INTO friendships VALUES (NULL, %s, %s)', (session['id'], user_id,))
-#                 mydb.commit()
-#                 cursor = mydb.cursor()
-#                 cursor.execute('DELETE FROM friend_request WHERE user1_id = %s AND user2_id = %s ', (user_id, session['id'],))
-#                 mydb.commit()
-#                 msg2 = 'Demande acceptée!'
-#         # Show the login form with message (if any)
-#         user = User(session['username'], session['password'], session['firstname'], session['lastname'],
-#                     session['img_link'], session['bio'])
-#         subs, posts = get_content()
-#         requests = get_friend_requests()
-#         liste_amis = friends_list()
-#         return render_template('friend-request.html', msg=msg, msg2=msg2, subs=subs, posts=posts, user=user, requ=requests, amis=liste_amis)
-#     else:
-#         return redirect(url_for('login'))
 @app.route('/amis', methods=['GET', 'POST'])
 def amis():
     if 'loggedin' in session:
@@ -142,6 +102,7 @@ def amis():
                 cursor.execute('DELETE FROM friend_request WHERE user1_id = %s AND user2_id = %s ', (user_id, session['id'],))
                 mydb.commit()
                 msg2 = 'Demande acceptÃ©e!'
+                msg2 = 'Demande acceptée!'
                 cursor.close()
         mydb.close()
         # Show the login form with message (if any)
@@ -158,11 +119,11 @@ def amis():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    mydb = connect()
     # Output message if something goes wrong...
     msg = ''
     # Check if "username" and "password" POST requests exist (user submitted form)
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
+        mydb = connect()
         # Create variables for easy access
         username = request.form['username']
         password = request.form['password']
@@ -171,6 +132,8 @@ def login():
         cursor.execute('SELECT * FROM user WHERE username = %s AND password = %s', (username, password,))
         # Fetch one record and return result
         account = cursor.fetchone()
+        cursor.close()
+        mydb.close()
         # If account exists in accounts table in out database
         if account:
             # Create session data, we can access this data in other routes
@@ -204,11 +167,11 @@ def logout():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    mydb = connect()
     # Output message if something goes wrong...
     msg = ''
     # Check if "username", "password" and "email" POST requests exist (user submitted form)
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
+        mydb = connect()
         # Create variables for easy access
         username = request.form['username']
         password = request.form['password']
@@ -229,23 +192,12 @@ def register():
             mydb.commit()
             msg = 'You have successfully registered!'
         cursor.close()
+        mydb.close()
     elif request.method == 'POST':
         # Form is empty... (no POST data)
         msg = 'Please fill out the form!'
     # Show registration form with message (if any)
     return render_template('register.html', msg=msg)
-
-
-@app.route('/suggestions/')
-def suggest():
-    if 'loggedin' in session:
-        return render_template('suggestions.html')
-    return redirect(url_for('login'))
-
-
-@app.route('/like_post/', methods=['POST'])
-def like_post():
-    return render_template('index.html')
 
 
 @app.route('/post/', methods=['GET', 'POST'])
@@ -270,6 +222,61 @@ def post():
         subs, posts = get_content()
         return render_template('post.html', msg=msg, subs=subs, posts=posts, user=user)
     return redirect(url_for('login'))
+
+
+@app.route('/community')
+def community():
+    if 'loggedin' in session and 'username' in session:
+        comm_id = request.args.get('comm')
+        subs, posts = get_comm_content(comm_id)
+        mydb = connect()
+        cursor = mydb.cursor()
+        cursor.execute('SELECT c.id, c.name, c.img_link FROM communities AS c WHERE c.id = %s', (comm_id,))
+        c = cursor.fetchone()
+        cursor.close()
+        mydb.close()
+        comm = Community(c[0], c[1], c[2])
+        user = User(session['username'], session['password'], session['firstname'], session['lastname'], session['img_link'], session['bio'])
+        return render_template('community.html', subs=subs, posts=posts, user=user, comm=comm)
+    return redirect(url_for('login'))
+
+
+def get_comm_content(comm_id):
+    mydb = connect()
+    cursor = mydb.cursor()
+    user_id = session['id']
+    cursor.execute('SELECT c.id, c.name, c.img_link FROM communities AS c')
+    communities = cursor.fetchall()
+    subs = [Community(s[0], s[1], s[2]) for s in communities]
+
+    cursor.execute('SELECT posts.* FROM posts JOIN friendships AS f ON posts.user_id = f.user1_id WHERE f.user2_id = %s AND posts.comm_id = %s', (user_id, comm_id,))
+    result = cursor.fetchall()
+    cursor.execute(
+        'SELECT posts.* FROM posts JOIN friendships AS f ON posts.user_id = f.user2_id WHERE f.user1_id = %s and posts.comm_id = %s',
+        (user_id, comm_id))
+    result += cursor.fetchall()
+    cursor.execute('SELECT * FROM posts WHERE user_id = %s and comm_id = %s', (session['id'], comm_id))
+    result += cursor.fetchall()
+    posts = []
+    for p in result:
+        cursor.execute('SELECT * FROM user WHERE id=%s', (p[1],))
+        u = cursor.fetchone()
+        u = User(u[1], '', u[2], u[3], u[5], u[6])
+        cursor.execute('SELECT * FROM communities WHERE id=%s', (p[7],))
+        c = cursor.fetchone()
+        if c is not None:
+            c = Community(c[0], c[1], c[2])
+        if p[4] == '':
+            img = None
+        else:
+            img = p[4]
+        posts.append(Submission(u, p[0], p[2], p[3], img, p[5], p[6], c, p[8]))
+    posts.sort()
+    posts.reverse()
+    if len(posts) > 10:
+        posts = posts[:10]
+    cursor.close()
+    return subs, posts
 
 
 def get_content():
@@ -336,6 +343,7 @@ def is_friend(user1_id, user2_id):
     cursor.close()
     return fr1 is not None or fr2 is not None
 
+
 def creation_graphe():
     graphe = GraphDic()
     mydb = connect()
@@ -398,9 +406,6 @@ def suggestion_amis():
     cursor.close()
     mydb.close()
     return sorted(suggest)
-
-
-
 
 
 if __name__ == '__main__':

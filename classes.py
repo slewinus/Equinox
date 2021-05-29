@@ -100,7 +100,7 @@ class Submission:
         return self.id
 
     def get_date(self):
-        return self.date.strftime("%m/%d/%Y, %H:%M")
+        return self.date.strftime("%d/%m/%Y, %H:%M")
 
 
 class GraphDic:
@@ -126,8 +126,6 @@ class GraphDic:
 
     def voisins(self, s):
         return self.dico[s]
-
-
 
 
 class File:
