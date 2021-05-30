@@ -16,17 +16,17 @@
 {% block content %}
     <form class="profile-form" action="{{ url_for('profile') }}" method="post">
         <div class="card">
-            <label for="username">Nom d'utilisateur :</label><br />
+            <label class="label" for="username">Nom d'utilisateur :</label><br />
             <input class="text-input" type="text" placeholder="Entrez votre pseudo" name="username" id="username" value="{{ user.get_username() }}" required><br />
-            <label for="password">Mot de passe :</label><br />
+            <label class="label" for="password">Mot de passe :</label><br />
             <input class="text-input" type="password" placeholder="Entrez votre mot de passe" name="password" id="password" value="{{ user.get_password() }}" required><br />
-            <label for="firstname">Prénom :</label><br />
+            <label class="label" for="firstname">Prénom :</label><br />
             <input class="text-input" type="text" placeholder="Entrez votre prénom" name="firstname" id="firstname" value="{{ user.get_firstname() }}"><br />
-            <label for="lastname">Nom :</label><br />
+            <label class="label" for="lastname">Nom :</label><br />
             <input class="text-input" type="text" placeholder="Entrez votre nom" name="lastname" id="lastname" value="{{ user.get_lastname() }}"><br />
-            <label for="img_link">Lien de photo de profil :</label><br />
+            <label class="label" for="img_link">Lien de photo de profil :</label><br />
             <input class="link" type="text" placeholder="Entrez le lien" name="img_link" id="img_link" value="{{ user.get_picture_link() }}"><br />
-            <label for="bio">Bio :</label><br />
+            <label class="label" for="bio">Bio :</label><br />
             <textarea class="bio-text" rows="20" cols="50" name="bio" id="bio">{{ user.get_bio() }}</textarea>
             <div class="msg">{{ msg }}</div>
             <input class="submit-button" type="submit" value="Mettre à jour">

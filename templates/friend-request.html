@@ -40,7 +40,7 @@
         <div class="amis-droite">
             <p class="msg">{{ msg }}</p>
             <form class="request-form" action="{{ url_for('amis') }}" method="post">
-                <input type="text" placeholder="Entrez le nom d'utilisateur :" name="username" id="username">
+                <input class= "ami-input" type="text" placeholder="Entrez le nom d'utilisateur :" name="username" id="username">
                 <input class="submit-button" type="submit" value="Demander">
             </form>
             <div class="amis-liste">
@@ -48,7 +48,7 @@
                 <form action="{{ url_for('amis') }}" method="post" class="ami">
                     <img class="photo-ami" src="{{ ami[2] }}" alt="photo de profil"/>
                     <h3 class="nom-ami">{{ ami[1] }}</h3>
-                    <h3 class="distance-ami">Distance : {{ ami[0] }}</h3>
+                    <p class="distance-ami">Distance : {{ ami[0] }}</p>
                     <input type="hidden" value="{{ ami[1] }}" name="username" id="username">
                     <input class="submit-button" type="submit" value="Demander">
                 </form>
