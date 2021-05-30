@@ -18,6 +18,7 @@
 }
 
 .bio-text {
+    resize: none;
     background-color: #5f6366;
     border: black solid 1px;
     color: #c3c4c6;
@@ -43,24 +44,25 @@
 }
 
 .card {
-  margin-left: auto;
-  margin-right: auto;
-  width: 450px;
-  height: 620px;
-  display: table;
-  grid-template-columns: 300px;
-  grid-template-rows: 100px;
-  border-radius: 18px;
-  background: #2c3034;
-  box-shadow: 4px 4px 15px rgba(0,0,0,0.6);
-  text-align: center;
-  font-size: 18px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 450px;
+    height: 620px;
+    display: table;
+    grid-template-columns: 300px;
+    grid-template-rows: 100px;
+    border-radius: 18px;
+    background: #2c3034;
+    box-shadow: 4px 4px 15px rgba(0,0,0,0.6);
+    text-align: center;
+    font-size: 18px;
+    margin:auto;
 
-  transition: 0.5s ease;
-  cursor: pointer;
+    transition: 0.5s ease;
+    cursor: pointer;
 }
 
 .card:hover {
-  transform: scale(1.05);
-  box-shadow: 4px 4px 15px rgba(0,0,0,0.3);
+    transform: scale(1.05);
+    box-shadow: 4px 4px 15px rgba(0,0,0,0.3);
 }

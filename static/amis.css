@@ -22,10 +22,16 @@
     flex-direction: row;
     height: 40px;
     background-color: #32363a;
+    margin-right: auto;
+    margin-left: auto;
     margin-bottom: 20px;
 	padding: 10px 0 10px 15px;
     width: 80%;
     border-radius: 9px;
+}
+
+.ami-input {
+    width: 80%;
 }
 
 .amis-liste{
@@ -54,6 +60,11 @@
 .nom-ami{
     padding: 0;
     line-height: 0.1;
+}
+
+.distance-ami {
+    margin-right: auto;
+    padding: 0;
 }
 
 .submit-button {
