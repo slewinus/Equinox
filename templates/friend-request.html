@@ -16,10 +16,11 @@
 {% block content %}
     <div class="wrapper">
         <div class="amis-gauche">
-            <div class="amis-demandes">
+            <div class="amis-demandes amis-liste">
                 {% for r in requ %}
-                <form action="{{ url_for('amis') }}" method="post">
-                    <p>{{ r[1] }}</p>
+                <form class="ami" action="{{ url_for('amis') }}" method="post">
+                    <img class="photo-ami" src="{{ r[3] }}" alt="photo de profil" />
+                    <h3 class="nom-ami">{{ r[1] }}</h3>
                     <input type="hidden" value="{{ r[0] }}" name="request_id" id="request_id">
                     <input type="hidden" value="{{ r[2] }}" name="user_id" id="user_id">
                     <div class="msg2">{{ msg2 }}</div>
@@ -37,19 +38,19 @@
             </div>
         </div>
         <div class="amis-droite">
+            <p class="msg">{{ msg }}</p>
             <form class="request-form" action="{{ url_for('amis') }}" method="post">
                 <input type="text" placeholder="Entrez le nom d'utilisateur :" name="username" id="username">
-                <div class="msg">{{ msg }}</div>
-                <input class="submit-button" type="submit" value="Demander en ami">
+                <input class="submit-button" type="submit" value="Demander">
             </form>
             <div class="amis-liste">
                 {% for ami in sugg %}
                 <form action="{{ url_for('amis') }}" method="post" class="ami">
                     <img class="photo-ami" src="{{ ami[2] }}" alt="photo de profil"/>
-                    <h3 class="nom_ami">{{ ami[1] }}</h3>
+                    <h3 class="nom-ami">{{ ami[1] }}</h3>
+                    <p class="distance-ami">Distance : {{ ami[0] }}</p>
                     <input type="hidden" value="{{ ami[1] }}" name="username" id="username">
-                    <div class="msg2">{{ msg }}</div>
-                    <input class="submit-button" type="submit" value="Demander en ami">
+                    <input class="submit-button" type="submit" value="Demander">
                 </form>
                 {% endfor %}
             </div>

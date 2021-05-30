@@ -318,7 +318,7 @@ def get_content():
 def get_friend_requests():
     mydb = connect()
     cursor = mydb.cursor()
-    cursor.execute('SELECT f.id, u.username, u.id FROM friend_request AS f JOIN user AS u ON u.id = f.user1_id WHERE f.user2_id = %s', (session['id'],))
+    cursor.execute('SELECT f.id, u.username, u.id, u.img_link FROM friend_request AS f JOIN user AS u ON u.id = f.user1_id WHERE f.user2_id = %s', (session['id'],))
     return cursor.fetchall()
 
 
