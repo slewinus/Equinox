@@ -1,11 +1,14 @@
 {% extends 'base.html' %}
+
 {% block title %}Friend Requests{% endblock %}
+
 {% block css %}<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='amis.css') }}">{% endblock %}
+
 {% block left %}
     <h2 class="sub_title">Subquinox:</h2>
     <ul class="sub_list">
         {% for sub in subs %}
-            <li><a href="#"><img class="sub_img" src="{{ sub.get_icon_link() }}"><h4>{{ sub.get_name() }}</h4></a></li>
+            <li><a href="/community?comm={{ sub.get_id() }}"><img class="sub_img" src="{{ sub.get_icon_link() }}"><h4>{{ sub.get_name() }}</h4></a></li>
         {% endfor %}
     </ul>
 {% endblock %}
@@ -56,13 +59,13 @@
 
 {% block right %}
     <figure class="right_top_menu">
-        <a href="/profile"><img class="settings_icon" src="https://www.iconpacks.net/icons/2/free-settings-icon-3110-thumb.png"  alt="settings"/></a>
+        <a href="/profile"><img class="settings_icon" src="https://cdn.discordapp.com/attachments/821417452562546718/846742544020537355/outline_tune_black_24dp.png"  alt="settings"/></a>
         <a href="/profile"><img class="user_profile_pic" src="{{ user.get_picture_link() }}"  alt="profile"/></a>
+        <a href="/logout"><img class="" src="https://cdn.discordapp.com/attachments/821417452562546718/846851924238270494/outline_logout_black_24dp.png"/></a>
     </figure>
     <ul class="right_side_menu">
-        <li><a href="/"><img class="icon" src="{{ url_for('static', filename='home.png') }}" alt="feed"><span class="link_text">Feed</span></a></li>
-        <li class="current_page"><a href="/amis"><img class="icon" src="{{ url_for('static', filename='sugg.png') }}" alt="amis"><span class="link_text">Amis</span></a></li>
-        <li><a href="/post/"><img class="icon" src="{{ url_for('static', filename='penne.png') }}" alt="post"><span class="link_text">Post</span></a></li>
-        <li><a href="#"><img class="icon" src="{{ url_for('static', filename='notification.png') }}" alt="bell"><span class="link_text">Notifications</span></a></li>
+        <li><a href="/"><img class="icon" src="{{ url_for('static', filename='outline_cottage_black_24dp.png') }}" alt="feed"><span class="link_text">Feed</span></a></li>
+        <li class="current_page"><a href="/amis"><img class="icon" src="{{ url_for('static', filename='outline_group_black_24dp.png') }}" alt="amis"><span class="link_text">Amis</span></a></li>
+        <li><a href="/post/"><img class="icon" src="{{ url_for('static', filename='outline_rate_review_black_24dp.png') }}" alt="post"><span class="link_text">Post</span></a></li>
     </ul>
 {% endblock %}
