@@ -1,0 +1,96 @@
+.wrapper{
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+}
+
+.amis-gauche{
+    width: 50%;
+    border-right: 2px solid black;
+    padding-top: 20px;
+    text-align: center;
+}
+
+.amis-droite{
+    padding-top: 20px;
+    width: 50%;
+    text-align: center;
+}
+
+.request-form {
+    display: flex;
+    flex-direction: row;
+    height: 40px;
+    background-color: #32363a;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 20px;
+	padding: 10px 0 10px 15px;
+    width: 80%;
+    border-radius: 9px;
+}
+
+.ami-input {
+    width: 80%;
+}
+
+.amis-liste{
+    margin-left: 50px;
+}
+
+.ami{
+    display: flex;
+    flex-direction: row;
+    height: 40px;
+    background-color: #32363a;
+    margin-bottom: 20px;
+	padding: 10px 0 10px 15px;
+    width: 80%;
+    border-radius: 9px;
+}
+
+.photo-ami{
+    object-fit: cover;
+    height: 35px;
+    width: 35px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.nom-ami{
+    padding: 0;
+    line-height: 0.1;
+}
+
+.distance-ami {
+    margin-right: auto;
+    padding: 0;
+}
+
+.submit-button {
+    margin: 5px;
+    background: #0eb5f7;
+    border-radius: 20px;
+    border: solid 1px transparent;
+    color: #fff;
+    font-size: 16px;
+}
+
+.submit-button-request {
+    margin: 5px;
+    background: #0eb5f7;
+    border-radius: 20px;
+    border: solid 1px transparent;
+    color: #fff;
+    font-size: 16px;
+}
+
+.submit-button:hover {
+    background-color: transparent;
+    border-color: #fff;
+}
+
+.submit-button-request:hover {
+    background-color: transparent;
+    border-color: #fff;
+}
