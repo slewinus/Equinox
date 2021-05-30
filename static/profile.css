@@ -1,18 +1,50 @@
-.text-input{
-    background-color: #5f6366;
-    box-shadow: none;
-    border: black solid 1px;
-    font-family: roboto;
+.label {
     color: #c3c4c6;
 }
 
-.profile-form{
+.text-input {
+    width: 30%;
+    background-color: #5f6366;
+    box-shadow: none;
+    border: black solid 1px;
+    color: #c3c4c6;
+}
+
+.link {
+    width: 85%;
+    background-color: #5f6366;
+    border: black solid 1px;
+    color: #c3c4c6;
+}
+
+.bio-text {
+    background-color: #5f6366;
+    border: black solid 1px;
+    color: #c3c4c6;
+}
+
+.profile-form {
     text-align: center;
-    margin-top: 20px;
+    margin-top: 8%;
+}
+
+.submit-button {
+    margin: 5px;
+    background: #0eb5f7;
+    border-radius: 20px;
+    border: solid 1px transparent;
+    color: #fff;
+    font-size: 16px;
+}
+
+.submit-button:hover {
+    background-color: transparent;
+    border-color: #fff;
 }
 
 .card {
-  margin: 0 auto;
+  margin-left: auto;
+  margin-right: auto;
   width: 450px;
   height: 620px;
   display: table;
@@ -20,9 +52,9 @@
   grid-template-rows: 100px;
   border-radius: 18px;
   background: #2c3034;
-  box-shadow: 5px 5px 15px rgba(0,0,0,0.9);
-  font-family: roboto;
+  box-shadow: 4px 4px 15px rgba(0,0,0,0.6);
   text-align: center;
+  font-size: 18px;
 
   transition: 0.5s ease;
   cursor: pointer;
@@ -30,5 +62,5 @@
 
 .card:hover {
   transform: scale(1.05);
-  box-shadow: 5px 5px 15px rgba(0,0,0,0.6);
+  box-shadow: 4px 4px 15px rgba(0,0,0,0.3);
 }

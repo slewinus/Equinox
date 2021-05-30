@@ -17,9 +17,21 @@
     text-align: center;
 }
 
+.request-form {
+    display: flex;
+    flex-direction: row;
+    height: 40px;
+    background-color: #32363a;
+    margin-bottom: 20px;
+	padding: 10px 0 10px 15px;
+    width: 80%;
+    border-radius: 9px;
+}
+
 .amis-liste{
     margin-left: 50px;
 }
+
 .ami{
     display: flex;
     flex-direction: row;
@@ -42,4 +54,32 @@
 .nom-ami{
     padding: 0;
     line-height: 0.1;
+}
+
+.submit-button {
+    margin: 5px;
+    background: #0eb5f7;
+    border-radius: 20px;
+    border: solid 1px transparent;
+    color: #fff;
+    font-size: 16px;
+}
+
+.submit-button-request {
+    margin: 5px;
+    background: #0eb5f7;
+    border-radius: 20px;
+    border: solid 1px transparent;
+    color: #fff;
+    font-size: 16px;
+}
+
+.submit-button:hover {
+    background-color: transparent;
+    border-color: #fff;
+}
+
+.submit-button-request:hover {
+    background-color: transparent;
+    border-color: #fff;
 }
