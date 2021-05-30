@@ -317,3 +317,9 @@ p, h1, h2, h3, h4, h5, h6, a, li{
 .sub_abo:hover{
     background-color: #35383b;
 }
+
+.distance-ami{
+    font-size: 12px;
+    color: #858c9a;
+    line-height: 1.3;
+}

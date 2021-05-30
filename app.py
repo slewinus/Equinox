@@ -11,11 +11,27 @@ app.secret_key = os.urandom(12).hex()
 
 
 def connect():
-    return mysql.connector.connect(
-        host="sql280.main-hosting.eu",
-        user="u938835060_test",
-        password="AGIEXx6hB]",
-        database="u938835060_elliott")
+    cnx = mysql.connector.connect(
+            host="sql280.main-hosting.eu",
+            user="u938835060_test",
+            password="AGIEXx6hB]",
+            database="u938835060_elliott")
+    return cnx
+
+
+def reconnect(cnx):
+    if not cnx.is_connected():
+        cnx = mysql.connector.connect(
+            host="sql280.main-hosting.eu",
+            user="u938835060_test",
+            password="AGIEXx6hB]",
+            database="u938835060_elliott")
+        return cnx
+    return cnx
+
+
+global mydb
+mydb = connect()
 
 
 @app.route('/')
@@ -29,8 +45,9 @@ def home():
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
+    global mydb
+    mydb = reconnect(mydb)
     if 'loggedin' in session:
-        mydb = connect()
         # Output message if something goes wrong...
         msg = ''
         if request.method == 'POST':
@@ -71,7 +88,8 @@ def profile():
 @app.route('/amis', methods=['GET', 'POST'])
 def amis():
     if 'loggedin' in session:
-        mydb = connect()
+        global mydb
+        mydb = reconnect(mydb)
         # Output message if something goes wrong...
         msg = ''
         msg2=''
@@ -123,7 +141,8 @@ def login():
     msg = ''
     # Check if "username" and "password" POST requests exist (user submitted form)
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
-        mydb = connect()
+        global mydb
+        mydb = reconnect(mydb)
         # Create variables for easy access
         username = request.form['username']
         password = request.form['password']
@@ -171,7 +190,8 @@ def register():
     msg = ''
     # Check if "username", "password" and "email" POST requests exist (user submitted form)
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
-        mydb = connect()
+        global mydb
+        mydb = reconnect(mydb)
         # Create variables for easy access
         username = request.form['username']
         password = request.form['password']
@@ -203,7 +223,8 @@ def register():
 @app.route('/post/', methods=['GET', 'POST'])
 def post():
     if 'loggedin' in session and 'username' in session:
-        mydb = connect()
+        global mydb
+        mydb = reconnect(mydb)
         msg = ''
         if request.method == 'POST' and 'content' in request.form and 'titre' in request.form:
             titre = request.form['titre']
@@ -229,7 +250,8 @@ def community():
     if 'loggedin' in session and 'username' in session:
         comm_id = request.args.get('comm')
         subs, posts = get_comm_content(comm_id)
-        mydb = connect()
+        global mydb
+        mydb = reconnect(mydb)
         cursor = mydb.cursor()
         cursor.execute('SELECT c.id, c.name, c.img_link FROM communities AS c WHERE c.id = %s', (comm_id,))
         c = cursor.fetchone()
@@ -242,7 +264,8 @@ def community():
 
 
 def get_comm_content(comm_id):
-    mydb = connect()
+    global mydb
+    mydb = reconnect(mydb)
     cursor = mydb.cursor()
     user_id = session['id']
     cursor.execute('SELECT c.id, c.name, c.img_link FROM communities AS c')
@@ -280,7 +303,8 @@ def get_comm_content(comm_id):
 
 
 def get_content():
-    mydb = connect()
+    global mydb
+    mydb = reconnect(mydb)
     cursor = mydb.cursor()
     user_id = session['id']
     cursor.execute('SELECT c.id, c.name, c.img_link FROM communities AS c')
@@ -316,14 +340,16 @@ def get_content():
 
 
 def get_friend_requests():
-    mydb = connect()
+    global mydb
+    mydb = reconnect(mydb)
     cursor = mydb.cursor()
     cursor.execute('SELECT f.id, u.username, u.id, u.img_link FROM friend_request AS f JOIN user AS u ON u.id = f.user1_id WHERE f.user2_id = %s', (session['id'],))
     return cursor.fetchall()
 
 
 def friends_list():
-    mydb = connect()
+    global mydb
+    mydb = reconnect(mydb)
     cursor = mydb.cursor()
     cursor.execute('SELECT f.user2_id, u.username, u.img_link FROM friendships AS f JOIN user AS u ON u.id = f.user2_id WHERE f.user1_id = %s', (session['id'],))
     liste_amis = cursor.fetchall()
@@ -334,7 +360,8 @@ def friends_list():
 
 
 def is_friend(user1_id, user2_id):
-    mydb = connect()
+    global mydb
+    mydb = reconnect(mydb)
     cursor = mydb.cursor()
     cursor.execute('SELECT * FROM friendships WHERE user1_id = %s AND user2_id = %s', (user1_id, user2_id,))
     fr1 = cursor.fetchone()
@@ -346,7 +373,8 @@ def is_friend(user1_id, user2_id):
 
 def creation_graphe():
     graphe = GraphDic()
-    mydb = connect()
+    global mydb
+    mydb = reconnect(mydb)
     cursor = mydb.cursor()
     cursor.execute('SELECT * FROM user')
     users = cursor.fetchall()
@@ -387,7 +415,8 @@ def distance(parcours, v):
 
 
 def suggestion_amis():
-    mydb = connect()
+    global mydb
+    mydb = reconnect(mydb)
     cursor = mydb.cursor()
     graphe = creation_graphe()
     suggest = []
