@@ -2,7 +2,7 @@
 {% block title %}Friend Requests{% endblock %}
 {% block css %}<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='amis.css') }}">{% endblock %}
 {% block left %}
-    <h2 class="sub_title">Communities:</h2>
+    <h2 class="sub_title">Subquinox:</h2>
     <ul class="sub_list">
         {% for sub in subs %}
             <li><a href="#"><img class="sub_img" src="{{ sub.get_icon_link() }}"><h4>{{ sub.get_name() }}</h4></a></li>

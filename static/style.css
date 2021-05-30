@@ -68,6 +68,10 @@ p, h1, h2, h3, h4, h5, h6, a, li{
     border-radius: 5px;
 }
 
+.sub_list .current_page{
+    background-color: #c3c4c6;
+}
+
 .sub_img{
     height: 40px;
     width: 40px;
@@ -86,6 +90,14 @@ p, h1, h2, h3, h4, h5, h6, a, li{
 
 .sub_list > li > a:hover{
     color: #9e9ea2;
+}
+
+.sub_list > .current_page > a > h4{
+    color: #2c2f33;
+}
+
+.sub_list > .current_page > a:hover{
+    color: #353535;
 }
 
 
@@ -151,13 +163,13 @@ p, h1, h2, h3, h4, h5, h6, a, li{
     font-weight: bold;
     color: #C0C0C0;
 }
-@media only screen and (max-width: 1450px) {
+@media only screen and (max-width: 1000px) {
     .right_side_menu > li > a > .link_text {
         display: none;
     }
 }
 
-@media only screen and (min-width: 1450px) {
+@media only screen and (min-width: 1000px) {
     .right_side_menu > li > a > .link_text {
         display: block;
     }
