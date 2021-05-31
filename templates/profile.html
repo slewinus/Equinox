@@ -2,7 +2,7 @@
 
 {% block title %}Profil - {{ user.get_username() }}{% endblock %}
 
-{% block css %}<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">{% endblock %}
+{% block css %}<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='profile.css') }}">{% endblock %}
 
 {% block left %}
     <h2 class="sub_title">Subquinox:</h2>
@@ -20,6 +20,7 @@
         <p class="user-profile-name">{{ user.get_firstname() }} {{ user.get_lastname() }}</p>
         <p class="user-bio">{{ user.get_bio() }}</p>
     </div>
+    <h2 class="last_posts">Derniers posts :</h2>
     <div class="the_posts">
     {% for post in posts %}
         <div class="single_post">

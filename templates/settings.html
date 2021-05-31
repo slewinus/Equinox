@@ -2,7 +2,7 @@
 
 {% block title %}Profile{% endblock %}
 
-{% block css %}<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='profile.css') }}">{% endblock %}
+{% block css %}<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='settings.css') }}">{% endblock %}
 
 {% block left %}
     <h2 class="sub_title">Subquinox:</h2>
@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block content %}
-    <form class="profile-form" action="{{ url_for('profile') }}" method="post">
+    <form class="profile-form" action="{{ url_for('settings') }}" method="post">
         <div class="card">
             <label class="label" for="username">Nom d'utilisateur :</label><br />
             <input class="text-input" type="text" placeholder="Entrez votre pseudo" name="username" id="username" value="{{ user.get_username() }}" required><br />
