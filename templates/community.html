@@ -20,7 +20,7 @@
     {% for post in posts %}
         <div class="single_post">
             <div class="post_identity">
-                <p class="post_author">{{ post.get_author() }}</p>
+                <a href="/profile?user={{ post.get_user().get_id() }}" class="post_author">{{ post.get_author() }}</a>
                 {% if post.has_community() %}
                 <p class="post_community">Subquinox : {{ post.get_community().get_name() }}</p>
                 {% endif %}
@@ -46,8 +46,8 @@
 
 {% block right %}
     <figure class="right_top_menu">
-        <a href="/profile"><img class="settings_icon" src="https://cdn.discordapp.com/attachments/821417452562546718/846742544020537355/outline_tune_black_24dp.png"  alt="settings"/></a>
-        <a href="/profile"><img class="user_profile_pic" src="{{ user.get_picture_link() }}"  alt="profile"/></a>
+        <a href="/settings"><img class="settings_icon" src="https://cdn.discordapp.com/attachments/821417452562546718/846742544020537355/outline_tune_black_24dp.png"  alt="settings"/></a>
+        <a href="/profile?user={{ user.get_id() }}"><img class="user_profile_pic" src="{{ user.get_picture_link() }}"  alt="profile"/></a>
         <a href="/logout"><img class="" src="https://cdn.discordapp.com/attachments/821417452562546718/846851924238270494/outline_logout_black_24dp.png"/></a>
     </figure>
     <ul class="right_side_menu">

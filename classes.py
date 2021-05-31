@@ -1,11 +1,12 @@
 class User:
-    def __init__(self, n, p, f, last, pp, b):
+    def __init__(self, n, p, f, last, pp, b, i):
         self.username = n
         self.password = p
         self.firstname = f
         self.lastname = last
         self.bio = b
         self.pic_link = pp
+        self.id = i
 
     def get_password(self):
         return self.password
@@ -24,6 +25,9 @@ class User:
 
     def get_lastname(self):
         return self.lastname
+
+    def get_id(self):
+        return self.id
 
 
 class Community:

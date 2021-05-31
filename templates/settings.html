@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block css %}<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='profile.css') }}">{% endblock %}
+
+{% block left %}
+    <h2 class="sub_title">Subquinox:</h2>
+    <ul class="sub_list">
+        {% for sub in subs %}
+            <li><a href="/community?comm={{ sub.get_id() }}"><img class="sub_img" src="{{ sub.get_icon_link() }}"><h4>{{ sub.get_name() }}</h4></a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+
+{% block content %}
+    <form class="profile-form" action="{{ url_for('profile') }}" method="post">
+        <div class="card">
+            <label class="label" for="username">Nom d'utilisateur :</label><br />
+            <input class="text-input" type="text" placeholder="Entrez votre pseudo" name="username" id="username" value="{{ user.get_username() }}" required><br />
+            <label class="label" for="password">Mot de passe :</label><br />
+            <input class="text-input" type="password" placeholder="Entrez votre mot de passe" name="password" id="password" value="{{ user.get_password() }}" required><br />
+            <label class="label" for="firstname">Prénom :</label><br />
+            <input class="text-input" type="text" placeholder="Entrez votre prénom" name="firstname" id="firstname" value="{{ user.get_firstname() }}"><br />
+            <label class="label" for="lastname">Nom :</label><br />
+            <input class="text-input" type="text" placeholder="Entrez votre nom" name="lastname" id="lastname" value="{{ user.get_lastname() }}"><br />
+            <label class="label" for="img_link">Lien de photo de profil :</label><br />
+            <input class="link" type="text" placeholder="Entrez le lien" name="img_link" id="img_link" value="{{ user.get_picture_link() }}"><br />
+            <label class="label" for="bio">Bio :</label><br />
+            <textarea class="bio-text" rows="20" cols="50" name="bio" id="bio">{{ user.get_bio() }}</textarea>
+            <div class="msg">{{ msg }}</div>
+            <input class="submit-button" type="submit" value="Mettre à jour">
+        </div>
+    </form>
+{% endblock %}
+
+{% block right %}
+    <figure class="right_top_menu">
+        <a href="/settings"><img class="settings_icon" src="https://cdn.discordapp.com/attachments/821417452562546718/846742544020537355/outline_tune_black_24dp.png"  alt="settings"/></a>
+        <a href="/profile?user={{ user.get_id() }}"><img class="user_profile_pic" src="{{ user.get_picture_link() }}"  alt="profile"/></a>
+        <a href="/logout"><img class="" src="https://cdn.discordapp.com/attachments/821417452562546718/846851924238270494/outline_logout_black_24dp.png"/></a>
+    </figure>
+    <ul class="right_side_menu">
+        <li><a href="/"><img class="icon" src="{{ url_for('static', filename='outline_cottage_black_24dp.png') }}" alt="feed"><span class="link_text">Feed</span></a></li>
+        <li><a href="/amis"><img class="icon" src="{{ url_for('static', filename='outline_group_black_24dp.png') }}" alt="amis"><span class="link_text">Amis</span></a></li>
+        <li><a href="/post/"><img class="icon" src="{{ url_for('static', filename='outline_rate_review_black_24dp.png') }}" alt="post"><span class="link_text">Post</span></a></li>
+    </ul>
+{% endblock %}

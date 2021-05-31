@@ -38,13 +38,54 @@ mydb = connect()
 def home():
     if 'loggedin' in session and 'username' in session:
         subs, posts = get_content()
-        user = User(session['username'], session['password'], session['firstname'], session['lastname'], session['img_link'], session['bio'])
+        user = User(session['username'], session['password'], session['firstname'], session['lastname'], session['img_link'],
+             session['bio'],
+             session['id'])
         return render_template('index.html', subs=subs, posts=posts, user=user)
     return redirect(url_for('login'))
 
 
-@app.route('/profile', methods=['GET', 'POST'])
+@app.route('/profile', methods=['GET'])
 def profile():
+    if 'loggedin' in session and 'username' in session:
+        user_id = request.args.get('user')
+        global mydb
+        mydb = reconnect(mydb)
+        cursor = mydb.cursor()
+        cursor.execute('SELECT c.id, c.name, c.img_link FROM communities AS c')
+        communities = cursor.fetchall()
+        subs = [Community(s[0], s[1], s[2]) for s in communities]
+        cursor.execute('SELECT posts.* FROM posts WHERE user_id = %s', (user_id,))
+        result = cursor.fetchall()
+        cursor.execute('SELECT * FROM user WHERE id = %s', (user_id,))
+        u = cursor.fetchone()
+        user = User(u[1], u[4], u[2], u[3], u[5], u[6], u[0])
+        posts = []
+        for p in result:
+            cursor.execute('SELECT * FROM user WHERE id=%s', (p[1],))
+            u = cursor.fetchone()
+            u = User(u[1], '', u[2], u[3], u[5], u[6], u[0])
+            cursor.execute('SELECT * FROM communities WHERE id=%s', (p[7],))
+            c = cursor.fetchone()
+            if c is not None:
+                c = Community(c[0], c[1], c[2])
+            if p[4] == '':
+                img = None
+            else:
+                img = p[4]
+            posts.append(Submission(u, p[0], p[2], p[3], img, p[5], p[6], c, p[8]))
+        posts.sort()
+        posts.reverse()
+        cursor.close()
+        mydb.close()
+        user2 = User(session['username'], session['password'], session['firstname'], session['lastname'], session['img_link'], session['bio'],
+                    session['id'])
+        return render_template('profile.html', subs=subs, posts=posts, user=user, user2=user2)
+    return redirect(url_for('login'))
+
+
+@app.route('/settings', methods=['GET', 'POST'])
+def settings():
     global mydb
     mydb = reconnect(mydb)
     if 'loggedin' in session:
@@ -77,8 +118,8 @@ def profile():
                 cursor.close()
             mydb.close()
         # Show the login form with message (if any)
-        user = User(session['username'], session['password'], session['firstname'], session['lastname'],
-                    session['img_link'], session['bio'])
+        user = User(session['username'], session['password'], session['firstname'], session['lastname'], session['img_link'], session['bio'],
+                    session['id'])
         subs, posts = get_content()
         return render_template('profile.html', msg=msg, subs=subs, posts=posts, user=user)
     else:
@@ -124,8 +165,8 @@ def amis():
                 cursor.close()
         mydb.close()
         # Show the login form with message (if any)
-        user = User(session['username'], session['password'], session['firstname'], session['lastname'],
-                    session['img_link'], session['bio'])
+        user = User(session['username'], session['password'], session['firstname'], session['lastname'], session['img_link'], session['bio'],
+                    session['id'])
         subs, posts = get_content()
         requests = get_friend_requests()
         liste_amis = friends_list()
@@ -238,8 +279,8 @@ def post():
             mydb.commit()
             cursor.close()
             msg = 'Post envoyé!'
-        user = User(session['username'], session['password'], session['firstname'], session['lastname'],
-                    session['img_link'], session['bio'])
+        user = User(session['username'], session['password'], session['firstname'], session['lastname'], session['img_link'], session['bio'],
+                    session['id'])
         subs, posts = get_content()
         return render_template('post.html', msg=msg, subs=subs, posts=posts, user=user)
     return redirect(url_for('login'))
@@ -258,7 +299,8 @@ def community():
         cursor.close()
         mydb.close()
         comm = Community(c[0], c[1], c[2])
-        user = User(session['username'], session['password'], session['firstname'], session['lastname'], session['img_link'], session['bio'])
+        user = User(session['username'], session['password'], session['firstname'], session['lastname'], session['img_link'], session['bio'],
+                    session['id'])
         return render_template('community.html', subs=subs, posts=posts, user=user, comm=comm)
     return redirect(url_for('login'))
 
@@ -267,24 +309,16 @@ def get_comm_content(comm_id):
     global mydb
     mydb = reconnect(mydb)
     cursor = mydb.cursor()
-    user_id = session['id']
     cursor.execute('SELECT c.id, c.name, c.img_link FROM communities AS c')
     communities = cursor.fetchall()
     subs = [Community(s[0], s[1], s[2]) for s in communities]
-
-    cursor.execute('SELECT posts.* FROM posts JOIN friendships AS f ON posts.user_id = f.user1_id WHERE f.user2_id = %s AND posts.comm_id = %s', (user_id, comm_id,))
+    cursor.execute('SELECT * FROM posts WHERE comm_id = %s', (comm_id,))
     result = cursor.fetchall()
-    cursor.execute(
-        'SELECT posts.* FROM posts JOIN friendships AS f ON posts.user_id = f.user2_id WHERE f.user1_id = %s and posts.comm_id = %s',
-        (user_id, comm_id))
-    result += cursor.fetchall()
-    cursor.execute('SELECT * FROM posts WHERE user_id = %s and comm_id = %s', (session['id'], comm_id))
-    result += cursor.fetchall()
     posts = []
     for p in result:
         cursor.execute('SELECT * FROM user WHERE id=%s', (p[1],))
         u = cursor.fetchone()
-        u = User(u[1], '', u[2], u[3], u[5], u[6])
+        u = User(u[1], '', u[2], u[3], u[5], u[6], u[0])
         cursor.execute('SELECT * FROM communities WHERE id=%s', (p[7],))
         c = cursor.fetchone()
         if c is not None:
@@ -321,7 +355,7 @@ def get_content():
     for p in result:
         cursor.execute('SELECT * FROM user WHERE id=%s', (p[1],))
         u = cursor.fetchone()
-        u = User(u[1], '', u[2], u[3], u[5], u[6])
+        u = User(u[1], '', u[2], u[3], u[5], u[6], u[0])
         cursor.execute('SELECT * FROM communities WHERE id=%s', (p[7],))
         c = cursor.fetchone()
         if c is not None:
@@ -429,9 +463,9 @@ def suggestion_amis():
             answer = cursor.fetchone()
             dist = distance(parcours, sommet)
             if dist is not None:
-                suggest.append((dist[0], answer[0], answer[1], dist[1]))
+                suggest.append((dist[0], answer[0], answer[1], dist[1], sommet))
             else:
-                suggest.append((16, answer[0], answer[1], "personne"))
+                suggest.append((16, answer[0], answer[1], "personne", sommet))
     cursor.close()
     mydb.close()
     return sorted(suggest)

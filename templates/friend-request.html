@@ -20,7 +20,7 @@
                 {% for r in requ %}
                 <form class="ami" action="{{ url_for('amis') }}" method="post">
                     <img class="photo-ami" src="{{ r[3] }}" alt="photo de profil" />
-                    <h3 class="nom-ami">{{ r[1] }}</h3>
+                    <a href="/profile?user={{ r[2] }}" class="nom-ami">{{ r[1] }}</a>
                     <input type="hidden" value="{{ r[0] }}" name="request_id" id="request_id">
                     <input type="hidden" value="{{ r[2] }}" name="user_id" id="user_id">
                     <div class="msg2">{{ msg2 }}</div>
@@ -32,7 +32,7 @@
                 {% for ami in amis %}
                 <div class="ami">
                     <img class="photo-ami" src="{{ ami[2] }}" alt="photo de profil"/>
-                    <h3 class="nom-ami">{{ ami[1] }}</h3>
+                    <a href="/profile?user={{ ami[0] }}" class="nom-ami">{{ ami[1] }}</a>
                 </div>
                 {% endfor %}
             </div>
@@ -47,7 +47,7 @@
                 {% for ami in sugg %}
                 <form action="{{ url_for('amis') }}" method="post" class="ami">
                     <img class="photo-ami" src="{{ ami[2] }}" alt="photo de profil"/>
-                    <h3 class="nom-ami">{{ ami[1] }}</h3>
+                    <a href="/profile?user={{ ami[4] }}" class="nom-ami">{{ ami[1] }}</a>
                     <p class="distance-ami">Distance : {{ ami[0] }}</p>
                     <input type="hidden" value="{{ ami[1] }}" name="username" id="username">
                     <input class="submit-button" type="submit" value="Demander">
@@ -60,8 +60,8 @@
 
 {% block right %}
     <figure class="right_top_menu">
-        <a href="/profile"><img class="settings_icon" src="https://cdn.discordapp.com/attachments/821417452562546718/846742544020537355/outline_tune_black_24dp.png"  alt="settings"/></a>
-        <a href="/profile"><img class="user_profile_pic" src="{{ user.get_picture_link() }}"  alt="profile"/></a>
+        <a href="/settings"><img class="settings_icon" src="https://cdn.discordapp.com/attachments/821417452562546718/846742544020537355/outline_tune_black_24dp.png"  alt="settings"/></a>
+        <a href="/profile?user={{ user.get_id() }}"><img class="user_profile_pic" src="{{ user.get_picture_link() }}"  alt="profile"/></a>
         <a href="/logout"><img class="" src="https://cdn.discordapp.com/attachments/821417452562546718/846851924238270494/outline_logout_black_24dp.png"/></a>
     </figure>
     <ul class="right_side_menu">

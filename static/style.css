@@ -245,3 +245,11 @@ p, h1, h2, h3, h4, h5, h6, a, li{
 .post_dislikes{
     color: #993b3b;
 }
+
+.post_author{
+    text-decoration : none;
+}
+
+.post_author:hover{
+    color: #999a9b;
+}
