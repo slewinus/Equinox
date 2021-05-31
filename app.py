@@ -121,7 +121,7 @@ def settings():
         user = User(session['username'], session['password'], session['firstname'], session['lastname'], session['img_link'], session['bio'],
                     session['id'])
         subs, posts = get_content()
-        return render_template('profile.html', msg=msg, subs=subs, posts=posts, user=user)
+        return render_template('settings.html', msg=msg, subs=subs, posts=posts, user=user)
     else:
         return redirect(url_for('login'))
 
