@@ -32,7 +32,7 @@ class User:
 
 def get_user_posts(user_id, db, first_post, last_post):
     from subquinox import Subquinox
-    from submission import Submission
+    from feed import Submission
     cursor = db.cursor()
     cursor.execute('SELECT posts.*, u.* FROM posts JOIN user AS u ON u.id = posts.user_id WHERE u.id = %s', (user_id,))
     result = cursor.fetchall()

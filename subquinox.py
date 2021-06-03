@@ -28,7 +28,7 @@ def get_sub_content(comm_id, db, first_post, last_post):
     cursor.execute('SELECT * FROM communities ORDER BY id')
     comms = cursor.fetchall()
     from user import User
-    from submission import Submission
+    from feed import Submission
     comms = [Subquinox(c[0], c[1], c[2]) for c in comms]
     posts = [Submission(User(p[10], p[11], p[12], p[13], p[14], p[15], p[9]), p[0], p[2], p[3], p[4] if p[4] != '' else None, p[5], p[6], comms[p[7]], p[8]) for p in result]
     posts.sort()
