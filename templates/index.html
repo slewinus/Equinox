@@ -30,7 +30,7 @@
             <div class="post_feedback">
                 <form action="/like" method="post">
                     <input type="hidden" name="post_id" value="{{ post[0].get_id() }}">
-                    <input type="hidden" name="previous_page" value="home">
+                    <input type="hidden" name="previous_page" value="/home">
                     {% if post[1] == 'liked' %}
                         <button class="post_likes liked" id="like_{{ post[0].get_id() }}">Like | {{ post[0].get_likes() }}</button>
                     {% else %}
@@ -39,7 +39,7 @@
                 </form>
                 <form action="/dislike" method="post">
                     <input type="hidden" name="post_id" value="{{ post[0].get_id() }}">
-                    <input type="hidden" name="previous_page" value="home">
+                    <input type="hidden" name="previous_page" value="/home">
                     {% if post[1] == 'disliked' %}
                         <button class="post_dislikes disliked" id="dislike_{{ post[0].get_id() }}"> Dislike | {{ post[0].get_dislikes() }}</button>
                     {% else %}

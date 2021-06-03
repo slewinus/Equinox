@@ -85,7 +85,7 @@ def community():
         global mydb
         mydb = reconnect(mydb)
         subs = get_all_subs(mydb)
-        posts = get_sub_content(comm_id, mydb, 0, 20)
+        posts = get_sub_content(comm_id, session['id'], mydb, 0, 20)
         cursor = mydb.cursor()
         cursor.execute('SELECT c.id, c.name, c.img_link FROM communities AS c WHERE c.id = %s', (comm_id,))
         c = cursor.fetchone()
@@ -296,7 +296,7 @@ def like_post():
             add_like(session['id'], post_id, mydb)
         else:
             remove_like(session['id'], post_id, mydb)
-        return redirect(url_for(previous_page))
+        return redirect(previous_page)
     else:
         return redirect(url_for('login'))
 
@@ -314,7 +314,7 @@ def dislike_post():
             add_dislike(session['id'], post_id, mydb)
         else:
             remove_dislike(session['id'], post_id, mydb)
-        return redirect(url_for(previous_page))
+        return redirect(previous_page)
     else:
         return redirect(url_for('login'))
 

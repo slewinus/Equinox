@@ -20,23 +20,36 @@
     {% for post in posts %}
         <div class="single_post">
             <div class="post_identity">
-                <a href="/profile?user={{ post.get_user().get_id() }}" class="post_author">{{ post.get_author() }}</a>
-                {% if post.has_community() %}
-                <p class="post_community">Subquinox : {{ post.get_community().get_name() }}</p>
+                <a href="/profile?user={{ post[0].get_user().get_id() }}" class="post_author">{{ post[0].get_author() }}</a>
+                {% if post[0].has_community() %}
+                <p class="post_community">Subquinox : {{ post[0].get_community().get_name() }}</p>
                 {% endif %}
-                <p class="post_date">{{ post.get_date() }}</p>
+                <p class="post_date">{{ post[0].get_date() }}</p>
             </div>
-            <h4 class="post_title">{{ post.get_title() }}</h4>
-            {% if post.has_image() %}
-            <img class="post_image" src='{{ post.get_image() }}' alt="post" />
+            <h4 class="post_title">{{ post[0].get_title() }}</h4>
+            {% if post[0].has_image() %}
+            <img class="post_image" src='{{ post[0].get_image() }}' alt="post" />
             {% endif %}
-            <p class="post_content">{{ post.get_text() }}</p>
+            <p class="post_content">{{ post[0].get_text() }}</p>
             <div class="post_feedback">
-                <form action="/like_post/" method="post">
-                    <input type="hidden" name="post_id" value="post.get_id()">
-                    <button class="post_likes" id="like_{{ post.get_id() }}">Like | {{ post.get_likes() }}</button>
+                <form action="/like" method="post">
+                    <input type="hidden" name="post_id" value="{{ post[0].get_id() }}">
+                    <input type="hidden" name="previous_page" value="community?comm={{ comm.get_id() }}">
+                    {% if post[1] == 'liked' %}
+                        <button class="post_likes liked" id="like_{{ post[0].get_id() }}">Like | {{ post[0].get_likes() }}</button>
+                    {% else %}
+                        <button class="post_likes" id="like_{{ post[0].get_id() }}">Like | {{ post[0].get_likes() }}</button>
+                    {% endif %}
                 </form>
-                <button class="post_dislikes" id="dislike_{{ post.get_id() }}"> Dislike | {{ post.get_dislikes() }}</button>
+                <form action="/dislike" method="post">
+                    <input type="hidden" name="post_id" value="{{ post[0].get_id() }}">
+                    <input type="hidden" name="previous_page" value="community?comm={{ comm.get_id() }}">
+                    {% if post[1] == 'disliked' %}
+                        <button class="post_dislikes disliked" id="dislike_{{ post[0].get_id() }}"> Dislike | {{ post[0].get_dislikes() }}</button>
+                    {% else %}
+                        <button class="post_dislikes" id="dislike_{{ post[0].get_id() }}"> Dislike | {{ post[0].get_dislikes() }}</button>
+                    {% endif %}
+                </form>
             </div>
         </div>
     {% endfor %}
