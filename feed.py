@@ -1,3 +1,5 @@
+from like import *
+
 class Submission:
     def __init__(self, u, p_id, t, txt, im, up, down, c, d):
         self.user = u
@@ -72,7 +74,15 @@ def get_home_feed(user_id, db, first_post, last_post):
     from user import User
     from subquinox import Subquinox
     comms = [Subquinox(c[0], c[1], c[2]) for c in comms]
-    posts = [Submission(User(p[10], p[11], p[12], p[13], p[14], p[15], p[9]), p[0], p[2], p[3], p[4] if p[4] != '' else None, p[5], p[6], comms[p[7]], p[8]) for p in result]
-    posts.sort()
-    posts.reverse()
-    return posts[first_post:last_post]
+    result = [Submission(User(p[10], p[11], p[12], p[13], p[14], p[15], p[9]), p[0], p[2], p[3], p[4] if p[4] != '' else None, p[5], p[6], comms[p[7]], p[8]) for p in result]
+    posts = []
+    result.sort()
+    result.reverse()
+    for post in result[first_post:last_post]:
+        if is_post_liked(user_id, post.get_id(), db):
+            posts.append((post, 'liked'))
+        elif is_post_disliked(user_id, post.get_id(), db):
+            posts.append((post, 'disliked'))
+        else:
+            posts.append((post, None))
+    return posts

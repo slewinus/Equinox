@@ -9,6 +9,7 @@ from feed import *
 from user import *
 from subquinox import *
 from amis import *
+from like import *
 
 app = Flask(__name__)
 
@@ -39,23 +40,17 @@ global mydb
 mydb = connect()
 
 
+
 @app.route('/')
 def home():
     if 'loggedin' in session and 'username' in session:
         global mydb
         mydb = reconnect(mydb)
         subs = get_all_subs(mydb)
-        posts = get_home_feed(session['id'], mydb, 0, 20)
-        user = User(session['username'], session['password'], session['firstname'], session['lastname'], session['img_link'],
-             session['bio'],
-             session['id'])
+        posts = get_home_feed(session['id'], mydb, 0, 10)
+        user = User(session['username'], session['password'], session['firstname'], session['lastname'], session['img_link'], session['bio'], session['id'])
         return render_template('index.html', subs=subs, posts=posts, user=user)
     return redirect(url_for('login'))
-
-
-#######
-#Posts#
-#######
 
 
 @app.route('/post/', methods=['GET', 'POST'])
@@ -83,11 +78,6 @@ def post():
     return redirect(url_for('login'))
 
 
-###########
-#Subquinox#
-###########
-
-
 @app.route('/community')
 def community():
     if 'loggedin' in session and 'username' in session:
@@ -105,11 +95,6 @@ def community():
                     session['id'])
         return render_template('community.html', subs=subs, posts=posts, user=user, comm=comm)
     return redirect(url_for('login'))
-
-
-###########################
-#Register - Login - Logout#
-###########################
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -195,11 +180,6 @@ def register():
     return render_template('register.html', msg=msg)
 
 
-############################
-#Profil - Paramètres - Feed#
-############################
-
-
 @app.route('/profile', methods=['GET'])
 def profile():
     if 'loggedin' in session and 'username' in session:
@@ -255,11 +235,6 @@ def settings():
         return redirect(url_for('login'))
 
 
-##########################
-#Amis - Suggestion d'amis#
-##########################
-
-
 @app.route('/amis', methods=['GET', 'POST'])
 def amis():
     if 'loggedin' in session:
@@ -304,6 +279,42 @@ def amis():
         liste_amis = friends_list(session['id'], mydb)
         suggestions = suggestion_amis(session['id'], mydb)
         return render_template('friend-request.html', msg=msg, msg2=msg2, subs=subs, user=user, requ=requests, amis=liste_amis, sugg=suggestions)
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route('/like', methods=['POST'])
+def like_post():
+    if 'loggedin' in session:
+        global mydb
+        mydb = reconnect(mydb)
+        post_id = request.form['post_id']
+        previous_page = request.form['previous_page']
+        if not is_post_liked(session['id'], post_id, mydb):
+            if is_post_disliked(session['id'], post_id, mydb):
+                remove_dislike(session['id'], post_id, mydb)
+            add_like(session['id'], post_id, mydb)
+        else:
+            remove_like(session['id'], post_id, mydb)
+        return redirect(url_for(previous_page))
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route('/dislike', methods=['POST'])
+def dislike_post():
+    if 'loggedin' in session:
+        global mydb
+        mydb = reconnect(mydb)
+        post_id = request.form['post_id']
+        previous_page = request.form['previous_page']
+        if not is_post_disliked(session['id'], post_id, mydb):
+            if is_post_liked(session['id'], post_id, mydb):
+                remove_like(session['id'], post_id, mydb)
+            add_dislike(session['id'], post_id, mydb)
+        else:
+            remove_dislike(session['id'], post_id, mydb)
+        return redirect(url_for(previous_page))
     else:
         return redirect(url_for('login'))
 
