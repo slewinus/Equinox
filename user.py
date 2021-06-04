@@ -37,7 +37,7 @@ def get_user_posts(user_id, db, first_post, last_post):
     from subquinox import Subquinox
     from feed import Submission
     cursor = db.cursor()
-    cursor.execute('SELECT posts.*, u.* FROM posts JOIN user AS u ON u.id = posts.user_id WHERE u.id = %s', (user_id,))
+    cursor.execute('SELECT posts.*, u.* FROM posts JOIN user AS u ON u.id = posts.user_id WHERE u.id = ?', (user_id,))
     result = cursor.fetchall()
     cursor.execute('SELECT * FROM communities ORDER BY id')
     comms = cursor.fetchall()
@@ -58,6 +58,6 @@ def get_user_posts(user_id, db, first_post, last_post):
 
 def get_user_from_id(user_id, db):
     cursor = db.cursor()
-    cursor.execute('SELECT username, firstname, lastname, img_link, bio FROM user WHERE id = %s', (user_id,))
+    cursor.execute('SELECT username, firstname, lastname, img_link, bio FROM user WHERE id = ?', (user_id,))
     result = cursor.fetchone()
     return User(result[0], "", result[1], result[2], result[3], result[4], user_id)

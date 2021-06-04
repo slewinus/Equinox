@@ -64,11 +64,11 @@ class Submission:
 
 def get_home_feed(user_id, db, first_post, last_post):
     cursor = db.cursor()
-    cursor.execute('SELECT posts.*, u.* FROM posts JOIN friendships AS f ON posts.user_id = f.user1_id JOIN user AS u ON u.id = posts.user_id WHERE f.user2_id = %s', (user_id,))
+    cursor.execute('SELECT posts.*, u.* FROM posts JOIN friendships AS f ON posts.user_id = f.user1_id JOIN user AS u ON u.id = posts.user_id WHERE f.user2_id = ?', (user_id,))
     result = cursor.fetchall()
-    cursor.execute('SELECT posts.*, u.* FROM posts JOIN friendships AS f ON posts.user_id = f.user2_id JOIN user AS u on u.id = posts.user_id WHERE f.user1_id = %s', (user_id,))
+    cursor.execute('SELECT posts.*, u.* FROM posts JOIN friendships AS f ON posts.user_id = f.user2_id JOIN user AS u on u.id = posts.user_id WHERE f.user1_id = ?', (user_id,))
     result += cursor.fetchall()
-    cursor.execute('SELECT posts.*, u.* FROM posts JOIN user AS u ON u.id = user_id WHERE user_id = %s', (user_id,))
+    cursor.execute('SELECT posts.*, u.* FROM posts JOIN user AS u ON u.id = user_id WHERE user_id = ?', (user_id,))
     result += cursor.fetchall()
     cursor.execute('SELECT * FROM communities ORDER BY id')
     comms = cursor.fetchall()

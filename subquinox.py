@@ -26,7 +26,7 @@ def get_all_subs(db):
 
 def get_sub_content(comm_id, user_id, db, first_post, last_post):
     cursor = db.cursor()
-    cursor.execute('SELECT posts.*, u.* FROM posts JOIN user AS u ON u.id = posts.user_id WHERE comm_id = %s', (comm_id,))
+    cursor.execute('SELECT posts.*, u.* FROM posts JOIN user AS u ON u.id = posts.user_id WHERE comm_id = ?', (comm_id,))
     result = cursor.fetchall()
     cursor.execute('SELECT * FROM communities ORDER BY id')
     comms = cursor.fetchall()

@@ -39,25 +39,25 @@ class File:
 
 def get_friend_requests(user_id, db):
     cursor = db.cursor()
-    cursor.execute('SELECT f.id, u.username, u.id, u.img_link FROM friend_request AS f JOIN user AS u ON u.id = f.user1_id WHERE f.user2_id = %s', (user_id,))
+    cursor.execute('SELECT f.id, u.username, u.id, u.img_link FROM friend_request AS f JOIN user AS u ON u.id = f.user1_id WHERE f.user2_id = ?', (user_id,))
     return cursor.fetchall()
 
 
 def friends_list(user_id, db):
     cursor = db.cursor()
-    cursor.execute('SELECT f.user2_id, u.username, u.img_link FROM friendships AS f JOIN user AS u ON u.id = f.user2_id WHERE f.user1_id = %s', (user_id,))
+    cursor.execute('SELECT f.user2_id, u.username, u.img_link FROM friendships AS f JOIN user AS u ON u.id = f.user2_id WHERE f.user1_id = ?', (user_id,))
     liste_amis = cursor.fetchall()
     cursor = db.cursor()
-    cursor.execute('SELECT f.user1_id, u.username, u.img_link FROM friendships AS f JOIN user AS u ON u.id = f.user1_id WHERE f.user2_id = %s', (user_id,))
+    cursor.execute('SELECT f.user1_id, u.username, u.img_link FROM friendships AS f JOIN user AS u ON u.id = f.user1_id WHERE f.user2_id = ?', (user_id,))
     liste_amis += cursor.fetchall()
     return liste_amis
 
 
 def is_friend(user1_id, user2_id, db):
     cursor = db.cursor()
-    cursor.execute('SELECT * FROM friendships WHERE user1_id = %s AND user2_id = %s', (user1_id, user2_id,))
+    cursor.execute('SELECT * FROM friendships WHERE user1_id = ? AND user2_id = ?', (user1_id, user2_id,))
     fr1 = cursor.fetchone()
-    cursor.execute('SELECT * FROM friendships WHERE user1_id = %s AND user2_id = %s', (user2_id, user1_id,))
+    cursor.execute('SELECT * FROM friendships WHERE user1_id = ? AND user2_id = ?', (user2_id, user1_id,))
     fr2 = cursor.fetchone()
     cursor.close()
     return fr1 is not None or fr2 is not None
@@ -109,11 +109,11 @@ def suggestion_amis(user_id, db):
     graphe = creation_graphe(db)
     suggest = []
     parcours = parcours_ch(graphe, user_id)
-    cursor.execute('SELECT user2_id FROM friend_request WHERE user1_id = %s', (user_id,))
+    cursor.execute('SELECT user2_id FROM friend_request WHERE user1_id = ?', (user_id,))
     requests = [a[0] for a in cursor.fetchall()]
     for sommet in graphe.sommets():
         if sommet != user_id and sommet not in graphe.voisins(user_id) and sommet not in requests:
-            cursor.execute('SELECT username, img_link FROM user WHERE id = %s', (sommet,))
+            cursor.execute('SELECT username, img_link FROM user WHERE id = ?', (sommet,))
             answer = cursor.fetchone()
             dist = distance(parcours, sommet)
             if dist is not None:

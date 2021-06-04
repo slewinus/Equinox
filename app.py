@@ -2,7 +2,7 @@ import os
 import re
 from datetime import datetime
 
-import mysql.connector
+import sqlite3
 from flask import Flask, render_template, redirect, url_for, session, request
 
 from feed import *
@@ -16,37 +16,12 @@ app = Flask(__name__)
 app.secret_key = os.urandom(12).hex()
 
 
-def connect():
-    cnx = mysql.connector.connect(
-            host="sql280.main-hosting.eu",
-            user="u938835060_test",
-            password="AGIEXx6hB]",
-            database="u938835060_elliott")
-    return cnx
-
-
-def reconnect(cnx):
-    if not cnx.is_connected():
-        cnx = mysql.connector.connect(
-            host="sql280.main-hosting.eu",
-            user="u938835060_test",
-            password="AGIEXx6hB]",
-            database="u938835060_elliott")
-        return cnx
-    return cnx
-
-
-global mydb
-mydb = connect()
-
-
 @app.route('/')
 def home():
     if 'loggedin' in session and 'username' in session:
-        global mydb
-        mydb = reconnect(mydb)
-        subs = get_all_subs(mydb)
-        posts = get_home_feed(session['id'], mydb, 0, 10)
+        con = sqlite3.connect('./equinox.db', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+        subs = get_all_subs(con)
+        posts = get_home_feed(session['id'], con, 0, 10)
         user = User(session['username'], session['password'], session['firstname'], session['lastname'], session['img_link'], session['bio'], session['id'])
         return render_template('index.html', subs=subs, posts=posts, user=user)
     return redirect(url_for('login'))
@@ -55,8 +30,7 @@ def home():
 @app.route('/post/', methods=['GET', 'POST'])
 def post():
     if 'loggedin' in session and 'username' in session:
-        global mydb
-        mydb = reconnect(mydb)
+        con = sqlite3.connect('./equinox.db', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
         msg = ''
         if request.method == 'POST' and 'content' in request.form and 'titre' in request.form:
             titre = request.form['titre']
@@ -64,15 +38,15 @@ def post():
             comm = request.form['community']
             img = request.form['img']
             now = datetime.now()
-            date = now.strftime('%Y-%m-%d %H:%M:%S')
-            cursor = mydb.cursor()
-            cursor.execute('INSERT INTO posts VALUES(NULL, %s, %s, %s, %s, 0, 0, %s, %s)', (session['id'], titre, content, img, comm, date,))
-            mydb.commit()
+            date = now.strftime('%Y-%m-%d %H:%M:?')
+            cursor = con.cursor()
+            cursor.execute('INSERT INTO posts VALUES(NULL, ?, ?, ?, ?, 0, 0, ?, ?)', (session['id'], titre, content, img, comm, date,))
+            con.commit()
             cursor.close()
             msg = 'Post envoyé!'
         user = User(session['username'], session['password'], session['firstname'], session['lastname'], session['img_link'], session['bio'],
                     session['id'])
-        subs = get_all_subs(mydb)
+        subs = get_all_subs(con)
         return render_template('post.html', msg=msg, subs=subs, user=user)
     return redirect(url_for('login'))
 
@@ -81,12 +55,11 @@ def post():
 def community():
     if 'loggedin' in session and 'username' in session:
         comm_id = request.args.get('comm')
-        global mydb
-        mydb = reconnect(mydb)
-        subs = get_all_subs(mydb)
-        posts = get_sub_content(comm_id, session['id'], mydb, 0, 20)
-        cursor = mydb.cursor()
-        cursor.execute('SELECT c.id, c.name, c.img_link FROM communities AS c WHERE c.id = %s', (comm_id,))
+        con = sqlite3.connect('./equinox.db', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+        subs = get_all_subs(con)
+        posts = get_sub_content(comm_id, session['id'], con, 0, 20)
+        cursor = con.cursor()
+        cursor.execute('SELECT c.id, c.name, c.img_link FROM communities AS c WHERE c.id = ?', (comm_id,))
         c = cursor.fetchone()
         cursor.close()
         comm = Subquinox(c[0], c[1], c[2])
@@ -104,14 +77,13 @@ def login():
     msg = ''
     # Check if "username" and "password" POST requests exist (user submitted form)
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
-        global mydb
-        mydb = reconnect(mydb)
         # Create variables for easy access
+        con = sqlite3.connect('./equinox.db', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
         username = request.form['username']
         password = request.form['password']
         # Check if account exists using MySQL
-        cursor = mydb.cursor()
-        cursor.execute('SELECT * FROM user WHERE username = %s AND password = %s', (username, password,))
+        cursor = con.cursor()
+        cursor.execute('SELECT * FROM user WHERE username = ? AND password = ?', (username, password,))
         # Fetch one record and return result
         account = cursor.fetchone()
         cursor.close()
@@ -152,14 +124,13 @@ def register():
     msg = ''
     # Check if "username", "password" and "email" POST requests exist (user submitted form)
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
-        global mydb
-        mydb = reconnect(mydb)
+        con = sqlite3.connect('./equinox.db', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
         # Create variables for easy access
         username = request.form['username']
         password = request.form['password']
         # Check if account exists using MySQL
-        cursor = mydb.cursor()
-        cursor.execute('SELECT * FROM user WHERE username = %s', (username,))
+        cursor = con.cursor()
+        cursor.execute('SELECT * FROM user WHERE username = ?', (username,))
         account = cursor.fetchone()
         # If account exists show error and validation checks
         if account:
@@ -170,8 +141,8 @@ def register():
             msg = 'Veuillez remplir le formulaire !'
         else:
             # Account doesnt exists and the form data is valid, now insert new account into accounts table
-            cursor.execute('INSERT INTO user VALUES (NULL, %s, "", "", %s, "https://www.pngkey.com/png/full/204-2049354_ic-account-box-48px-profile-picture-icon-square.png", "")', (username, password,))
-            mydb.commit()
+            cursor.execute('INSERT INTO user VALUES (NULL, ?, "", "", ?, "https://www.pngkey.com/png/full/204-2049354_ic-account-box-48px-profile-picture-icon-square.png", "")', (username, password,))
+            con.commit()
             msg = 'Vous vous êtes bien enregistré !'
         cursor.close()
     elif request.method == 'POST':
@@ -185,11 +156,10 @@ def register():
 def profile():
     if 'loggedin' in session and 'username' in session:
         user_id = request.args.get('user')
-        global mydb
-        mydb = reconnect(mydb)
-        posts = get_user_posts(user_id, mydb, 0, 25)
-        subs = get_all_subs(mydb)
-        user = get_user_from_id(user_id, mydb)
+        con = sqlite3.connect('./equinox.db', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+        posts = get_user_posts(user_id, con, 0, 25)
+        subs = get_all_subs(con)
+        user = get_user_from_id(user_id, con)
         user2 = User(session['username'], session['password'], session['firstname'], session['lastname'], session['img_link'], session['bio'], session['id'])
         return render_template('profile.html', subs=subs, posts=posts, user=user, user2=user2)
     return redirect(url_for('login'))
@@ -197,8 +167,7 @@ def profile():
 
 @app.route('/settings', methods=['GET', 'POST'])
 def settings():
-    global mydb
-    mydb = reconnect(mydb)
+    con = sqlite3.connect('./equinox.db', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
     if 'loggedin' in session:
         # Output message if something goes wrong...
         msg = ''
@@ -209,16 +178,16 @@ def settings():
             firstname = request.form['firstname']
             lastname = request.form['lastname']
             bio = request.form['bio']
-            cursor = mydb.cursor()
-            cursor.execute('SELECT * FROM user WHERE username = %s', (username,))
+            cursor = con.cursor()
+            cursor.execute('SELECT * FROM user WHERE username = ?', (username,))
             account = cursor.fetchone()
             cursor.close()
             if account and account[0] != session['id']:
                 msg = 'Le pseudo est déjà utilisé'
             else:
-                cursor = mydb.cursor()
-                cursor.execute('UPDATE user SET username = %s, password = %s, img_link = %s, firstname = %s, lastname = %s, bio = %s WHERE id = %s', (username, password, img_link, firstname, lastname, bio, session['id']))
-                mydb.commit()
+                cursor = con.cursor()
+                cursor.execute('UPDATE user SET username = ?, password = ?, img_link = ?, firstname = ?, lastname = ?, bio = ? WHERE id = ?', (username, password, img_link, firstname, lastname, bio, session['id'],))
+                con.commit()
                 session['username'] = username
                 session['password'] = password
                 session['img_link'] = img_link
@@ -230,7 +199,7 @@ def settings():
         # Show the login form with message (if any)
         user = User(session['username'], session['password'], session['firstname'], session['lastname'], session['img_link'], session['bio'],
                     session['id'])
-        subs = get_all_subs(mydb)
+        subs = get_all_subs(con)
         return render_template('settings.html', msg=msg, subs=subs, user=user)
     else:
         return redirect(url_for('login'))
@@ -239,46 +208,40 @@ def settings():
 @app.route('/amis', methods=['GET', 'POST'])
 def amis():
     if 'loggedin' in session:
-        global mydb
-        mydb = reconnect(mydb)
+        con = sqlite3.connect('./equinox.db', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
         # Output message if something goes wrong...
         msg = ''
-        msg2=''
+        msg2= ''
         if request.method == 'POST':
             if 'username' in request.form:
                 username = request.form['username']
-                cursor = mydb.cursor()
-                cursor.execute('SELECT * FROM user WHERE username = %s', (username,))
+                cursor = con.cursor()
+                cursor.execute('SELECT * FROM user WHERE username = ?', (username,))
                 user2_id = cursor.fetchone()[0]
-                cursor.close()
-                cursor = mydb.cursor()
-                cursor.execute('SELECT * FROM friend_request WHERE user1_id = %s AND user2_id = %s', (str(session['id']), str(user2_id),))
+                cursor.execute('SELECT * FROM friend_request WHERE user1_id = ? AND user2_id = ?', (str(session['id']), str(user2_id),))
                 fr = cursor.fetchone()
-                cursor.close()
                 if fr is None and not is_friend(session['id'], str(user2_id)):
-                    cursor = mydb.cursor()
-                    cursor.execute('INSERT INTO friend_request VALUES (NULL, %s, %s)', (str(session['id']), str(user2_id),))
-                    mydb.commit()
+                    cursor.execute('INSERT INTO friend_request VALUES (NULL, ?, ?)', (str(session['id']), str(user2_id,)))
+                    con.commit()
                     msg = "Demande d'ami envoyée!"
                 else :
                     msg = "Echec lors de l'envoi de la demande d'ami"
             else:
                 user_id = request.form['user_id']
-                cursor = mydb.cursor()
-                cursor.execute('INSERT INTO friendships VALUES (NULL, %s, %s)', (session['id'], user_id,))
-                mydb.commit()
-                cursor = mydb.cursor()
-                cursor.execute('DELETE FROM friend_request WHERE user1_id = %s AND user2_id = %s ', (user_id, session['id'],))
-                mydb.commit()
+                cursor = con.cursor()
+                cursor.execute('INSERT INTO friendships VALUES (NULL, ?, ?)', (session['id'], user_id,))
+                con.commit()
+                cursor.execute('DELETE FROM friend_request WHERE user1_id = ? AND user2_id = ? ', (user_id, session['id'],))
+                con.commit()
                 msg2 = 'Demande acceptée!'
                 cursor.close()
         # Show the login form with message (if any)
         user = User(session['username'], session['password'], session['firstname'], session['lastname'], session['img_link'], session['bio'],
                     session['id'])
-        subs = get_all_subs(mydb)
-        requests = get_friend_requests(session['id'], mydb)
-        liste_amis = friends_list(session['id'], mydb)
-        suggestions = suggestion_amis(session['id'], mydb)
+        subs = get_all_subs(con)
+        requests = get_friend_requests(session['id'], con)
+        liste_amis = friends_list(session['id'], con)
+        suggestions = suggestion_amis(session['id'], con)
         return render_template('friend-request.html', msg=msg, msg2=msg2, subs=subs, user=user, requ=requests, amis=liste_amis, sugg=suggestions)
     else:
         return redirect(url_for('login'))
@@ -287,16 +250,15 @@ def amis():
 @app.route('/like', methods=['POST'])
 def like_post():
     if 'loggedin' in session:
-        global mydb
-        mydb = reconnect(mydb)
+        con = sqlite3.connect('./equinox.db', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
         post_id = request.form['post_id']
         previous_page = request.form['previous_page']
-        if not is_post_liked(session['id'], post_id, mydb):
-            if is_post_disliked(session['id'], post_id, mydb):
-                remove_dislike(session['id'], post_id, mydb)
-            add_like(session['id'], post_id, mydb)
+        if not is_post_liked(session['id'], post_id, con):
+            if is_post_disliked(session['id'], post_id, con):
+                remove_dislike(session['id'], post_id, con)
+            add_like(session['id'], post_id, con)
         else:
-            remove_like(session['id'], post_id, mydb)
+            remove_like(session['id'], post_id, con)
         return redirect(previous_page)
     else:
         return redirect(url_for('login'))
@@ -305,16 +267,15 @@ def like_post():
 @app.route('/dislike', methods=['POST'])
 def dislike_post():
     if 'loggedin' in session:
-        global mydb
-        mydb = reconnect(mydb)
+        con = sqlite3.connect('./equinox.db', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
         post_id = request.form['post_id']
         previous_page = request.form['previous_page']
-        if not is_post_disliked(session['id'], post_id, mydb):
-            if is_post_liked(session['id'], post_id, mydb):
-                remove_like(session['id'], post_id, mydb)
-            add_dislike(session['id'], post_id, mydb)
+        if not is_post_disliked(session['id'], post_id, con):
+            if is_post_liked(session['id'], post_id, con):
+                remove_like(session['id'], post_id, con)
+            add_dislike(session['id'], post_id, con)
         else:
-            remove_dislike(session['id'], post_id, mydb)
+            remove_dislike(session['id'], post_id, con)
         return redirect(previous_page)
     else:
         return redirect(url_for('login'))
