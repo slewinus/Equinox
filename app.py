@@ -62,12 +62,12 @@ def post():
         if request.method == 'POST' and 'content' in request.form and 'titre' in request.form:
             titre = request.form['titre']
             content = request.form['content']
-            community = request.form['Subquinox']
+            comm = request.form['community']
             img = request.form['img']
             now = datetime.now()
             date = now.strftime('%Y-%m-%d %H:%M:%S')
             cursor = mydb.cursor()
-            cursor.execute('INSERT INTO posts VALUES(NULL, %s, %s, %s, %s, 0, 0, %s, %s)', (str(session['id']), str(titre), str(content), str(img), str(community), date,))
+            cursor.execute('INSERT INTO posts VALUES(NULL, %s, %s, %s, %s, 0, 0, %s, %s)', (session['id'], titre, content, img, comm, date,))
             mydb.commit()
             cursor.close()
             msg = 'Post envoyé!'
@@ -91,6 +91,8 @@ def community():
         c = cursor.fetchone()
         cursor.close()
         comm = Subquinox(c[0], c[1], c[2])
+        print(comm.get_id())
+        print(comm_id)
         user = User(session['username'], session['password'], session['firstname'], session['lastname'], session['img_link'], session['bio'],
                     session['id'])
         return render_template('community.html', subs=subs, posts=posts, user=user, comm=comm)
