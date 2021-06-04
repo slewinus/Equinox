@@ -38,7 +38,7 @@ def post():
             comm = request.form['community']
             img = request.form['img']
             now = datetime.now()
-            date = now.strftime('%Y-%m-%d %H:%M:?')
+            date = now.strftime('%Y-%m-%d %H:%M:%S')
             cursor = con.cursor()
             cursor.execute('INSERT INTO posts VALUES(NULL, ?, ?, ?, ?, 0, 0, ?, ?)', (session['id'], titre, content, img, comm, date,))
             con.commit()
@@ -63,8 +63,6 @@ def community():
         c = cursor.fetchone()
         cursor.close()
         comm = Subquinox(c[0], c[1], c[2])
-        print(comm.get_id())
-        print(comm_id)
         user = User(session['username'], session['password'], session['firstname'], session['lastname'], session['img_link'], session['bio'],
                     session['id'])
         return render_template('community.html', subs=subs, posts=posts, user=user, comm=comm)
