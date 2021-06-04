@@ -1,5 +1,6 @@
 from like import *
 
+
 class User:
     def __init__(self, n, p, f, last, pp, b, i):
         self.username = n

@@ -40,7 +40,6 @@ global mydb
 mydb = connect()
 
 
-
 @app.route('/')
 def home():
     if 'loggedin' in session and 'username' in session:
